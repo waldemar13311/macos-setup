@@ -1,13 +1,13 @@
 ---
 # Установка собственной темы gnzh
 - name: Modify gnzh theme
-  hosts: localhost
+  hosts: master # Или укажите localhost
   become: false
   gather_facts: true
 
   vars:
     # Пользователь, для которого устанавливается тема gnzh
-    zsh_user: waldemar13311
+    zsh_user: ansible-user
 
     # Домашняя директория пользователя в зависимости от ОС
     zsh_user_home: "{{ '/Users/' + zsh_user if ansible_os_family == 'Darwin' else '/home/' + zsh_user }}"

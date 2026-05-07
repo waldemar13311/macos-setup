@@ -1,0 +1,4 @@
+all:
+  hosts:
+    master:
+      ansible_host: master.home

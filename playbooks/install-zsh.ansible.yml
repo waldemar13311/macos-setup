@@ -1,12 +1,12 @@
 ---
 - name: Install zsh
-  hosts: localhost # Или укажите хост, например, ubuntu-pg
+  hosts: master # Или укажите localhost
   become: false
   gather_facts: true
 
   vars:
     # Пользователь, для которого устанавливается zsh
-    zsh_user: waldemar13311
+    zsh_user: ansible-user
 
     # Домашняя директория пользователя в зависимости от ОС
     zsh_user_home: "{{ '/Users/' + zsh_user if ansible_os_family == 'Darwin' else '/home/' + zsh_user }}"
@@ -52,26 +52,26 @@
       # Копирование текста, введенного в командной строке, в буфер (X11, только Linux)
       - { name: copybuffer, when: "{{ ansible_os_family != 'Darwin' }}" }
 
-      # Универсальный распаковщик архивов
-      - extract
-
-      # Удобное переключение между фоновыми процессами (Ctrl+Z)
-      - fancy-ctrl-z
-
-      # Дополнительные команды для git
-      - git-extras
-
       # Дополнительные команды для GNU (только Linux)
       - { name: gnu-utils, when: "{{ ansible_os_family != 'Darwin' }}" }
 
       # Управление сервисами systemd (только Linux)
       - { name: systemd, command: systemctl, when: "{{ ansible_os_family != 'Darwin' }}" }
 
-      # Python (упрощает работу с Python)
-      - python
+      # Tmux (только Linux)
+      - { name: tmux, command: tmux, when: "{{ ansible_os_family != 'Darwin' }}" }
 
-      # Tmux
-      - { name: tmux, command: tmux }
+      # Универсальный распаковщик архивов
+      - extract
+
+      # Автодополнение для git
+      - git
+
+      # Автодополнение для ansible
+      - ansible
+
+      # golang (упрощает работу с go)
+      - golang
 
       # Автодополнение для команд
       - { name: zsh-users/zsh-autosuggestions, when: "{{ zsh_version is version_compare('5.0', '>=') }}" }
@@ -99,6 +99,7 @@
       - { alias: 'll', action: 'ls -lAhFi --group-dirs last --date \"+%d.%m.%Y %H:%M\"' }
       - { alias: 'cat', action: '{{ "bat -pp" if ansible_os_family == "Darwin" else "batcat -pp" }}' }
       - { alias: 'less', action: '{{ "bat" if ansible_os_family == "Darwin" else "batcat" }}' }
+      - { alias: 'rm', action: 'trash'}
       - { alias: 'copy', action: 'pbcopy', when: "{{ ansible_os_family == 'Darwin' }}" }
 
   pre_tasks:
@@ -156,13 +157,12 @@
     - name: Install useful packages (Debian/Ubuntu)
       become: true
       ansible.builtin.package:
+        update_cache: true
         name:
           - lsd
           - bat
-          - xclip
-          - xsel
           - locales  # Пакет для работы с локалями (может потребоваться для UTF-8)
-        update_cache: true
+          - trash-cli
       when: ansible_os_family == "Debian"
 
     - name: Install useful packages (macOS)
@@ -173,4 +173,5 @@
       loop:
         - lsd
         - bat
+        - trash
       when: ansible_os_family == "Darwin"

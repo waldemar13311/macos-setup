@@ -2,3 +2,4 @@
 .ansible/*
 !.ansible/requirements.yml
 
+uv.lock
