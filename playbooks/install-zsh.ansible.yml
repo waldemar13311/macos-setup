@@ -100,6 +100,7 @@
       - { alias: 'cat', action: '{{ "bat -pp" if ansible_os_family == "Darwin" else "batcat -pp" }}' }
       - { alias: 'less', action: '{{ "bat" if ansible_os_family == "Darwin" else "batcat" }}' }
       - { alias: 'rm', action: 'trash'}
+      - { alias: 'k', action: 'kubectl' }
       - { alias: 'copy', action: 'pbcopy', when: "{{ ansible_os_family == 'Darwin' }}" }
 
   pre_tasks:
