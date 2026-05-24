@@ -1,0 +1,16 @@
+- name: Base desktop apps installation
+  hosts: macos
+  become: false
+  gather_facts: true
+
+  tasks:
+    - name: Install desktop apps via Homebrew Cask (macOS)
+      community.general.homebrew_cask:
+        name: "{{ item }}"
+        state: present
+        # Автоматически соглашаться с лицензиями (полезно для некоторых приложений)
+        accept_external_apps: true
+      loop:
+        - google-chrome
+        - visual-studio-code
+      when: ansible_os_family == "Darwin"

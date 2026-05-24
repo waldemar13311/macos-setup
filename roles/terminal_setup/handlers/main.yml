@@ -1,0 +1,11 @@
+---
+- name: Initialize Antidote plugins
+  ansible.builtin.command:
+    cmd: >
+      zsh -c "source $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh &&
+      antidote bundle
+      < {{ ansible_user_dir }}/.zsh_plugins.txt
+      > {{ ansible_user_dir }}/.zsh_plugins.zsh"
+  environment:
+    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+  changed_when: true

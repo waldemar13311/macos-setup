@@ -26,17 +26,27 @@ ansible-playbook playbooks/install-my-gnzh-theme.ansible.yml
 ```bash
 mkdir -p ~/.docker/completions
 docker completion zsh > ~/.docker/completions/_docker
+
+mkdir -p ~/.kubectl/completions
+kubectl completion zsh > ~/.kubectl/completions/_kubectl
 ```
 
 ```bash
 cat <<"EOT" >> ~/.zshrc.local
-# Автодополнение для docker (добавлено мной)
-FPATH="$HOME/.docker/completions:$FPATH"
+# Автодополнение
+fpath=(
+    $HOME/.docker/completions/
+    $HOME/.kubectl/completions/
 
-# Автодополнение для multipass
-fpath=($HOME/.config/zsh/completions $fpath)
+    # Автодополнение для multipass (возможно комментарии не сработают/не корректны)
+    $HOME/.config/zsh/completions
+    $fpath
+)
 
 autoload -Uz compinit
 compinit
 EOT
 ```
+Дописать чтобы мои настройки vim ставились (~/.vimrc) !
+
+Возможно стоит отказаться от Antigen на базу Antidote + OMZ libs !

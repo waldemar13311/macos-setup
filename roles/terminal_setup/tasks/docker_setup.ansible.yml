@@ -1,0 +1,43 @@
+---
+- name: Ensure .docker directory exists
+  ansible.builtin.file:
+    path: "{{ [ansible_user_dir, '.docker'] | path_join }}"
+    state: directory
+    mode: "0755"
+
+- name: Check if Docker config.json exists
+  ansible.builtin.stat:
+    path: "{{ [ansible_user_dir, '.docker', 'config.json'] | path_join }}"
+  register: terminal_setup_docker_config_stat
+
+- name: Read Docker config.json if it exists
+  ansible.builtin.slurp:
+    src: "{{ [ansible_user_dir, '.docker', 'config.json'] | path_join }}"
+  register: terminal_setup_docker_config_encoded
+  when: terminal_setup_docker_config_stat.stat.exists
+
+- name: Update cliPluginsExtraDirs idempotently
+  ansible.builtin.copy:
+    dest: "{{ [ansible_user_dir, '.docker', 'config.json'] | path_join }}"
+    mode: "0644"
+    # Безопасный разбор: если файла не было, берем '{}'.
+    # Если был, но внутри пусто (размер 0), тоже берем '{}'.
+    content: >-
+      {{
+        (
+          (terminal_setup_docker_config_encoded.content | b64decode | from_json)
+          if (terminal_setup_docker_config_stat.stat.exists and terminal_setup_docker_config_stat.stat.size > 0)
+          else {}
+        )
+        | combine({'cliPluginsExtraDirs': ['/opt/homebrew/lib/docker/cli-plugins', '/usr/local/lib/docker/cli-plugins']})
+        | to_nice_json(indent=2)
+      }}
+
+- name: Generate native Docker completions
+  ansible.builtin.shell: |
+    docker completion zsh > "{{ [ansible_user_dir, '.zsh', 'completion', '_docker'] | path_join }}"
+  environment:
+    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+  # таск пропустится (ok), если файл уже существует
+  args:
+    creates: "{{ [ansible_user_dir, '.zsh', 'completion', '_docker'] | path_join }}"

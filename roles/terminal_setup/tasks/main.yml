@@ -1,0 +1,62 @@
+---
+- name: Remove old Zsh completion caches
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ [ansible_user_dir, '.zcompdump'] | path_join }}"
+    - "{{ [ansible_user_dir, '.zcompdump.zwc'] | path_join }}"
+  changed_when: false
+
+- name: Install antidote (macOS)
+  ansible.builtin.package:
+    name: antidote
+    use: homebrew
+    state: present
+  when: ansible_os_family == "Darwin"
+
+- name: Install console utilities (macOS)
+  ansible.builtin.package:
+    name: "{{ terminal_setup_modern_console_utils + terminal_setup_console_utils }}"
+    use: homebrew
+    state: present
+  when: ansible_os_family == "Darwin"
+
+- name: Setup vim settings via template
+  ansible.builtin.copy:
+    src: ".vimrc"
+    dest: "{{ [ansible_user_dir, '.vimrc'] | path_join }}"
+    mode: "0644"
+    owner: "{{ ansible_user_id }}"
+
+- name: Copy my custom theme to ~/.zsh-my-gnzh-theme.zsh-theme
+  ansible.builtin.copy:
+    src: "files/.zsh-my-gnzh-theme.zsh-theme"
+    dest: "{{ [ansible_user_dir, '.zsh-my-gnzh-theme.zsh-theme'] | path_join }}"
+    mode: '0644'
+  become: false
+
+- name: Create .zsh_plugins.txt from template
+  ansible.builtin.copy:
+    dest: "{{ [ansible_user_dir, '.zsh_plugins.txt'] | path_join }}"
+    content: "{{ terminal_setup_zsh_plugins | join('\n') }}\n"
+    mode: "0644"
+    owner: "{{ ansible_user_id }}"
+  notify: Initialize Antidote plugins
+
+- name: Ensure Antidote is sourced in .zshrc
+  ansible.builtin.copy:
+    src: ".zshrc"
+    dest: "{{ [ansible_user_dir, '.zshrc'] | path_join }}"
+    mode: "0644"
+    owner: "{{ ansible_user_id }}"
+  notify: Initialize Antidote plugins
+
+- name: Create local Zsh completion directory
+  ansible.builtin.file:
+    path: "{{ [ansible_user_dir, '.zsh', 'completion'] | path_join }}"
+    state: directory
+    mode: "0755"
+
+- name: Configure Docker and generate completions
+  ansible.builtin.include_tasks: docker_setup.ansible.yml

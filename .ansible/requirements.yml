@@ -1,6 +1,4 @@
 ---
-roles:
-  - src: viasite-ansible.zsh
-    name: viasite-ansible.zsh
-    version: v3.7.9
-...
+collections:
+  - name: community.general
+    version: ">=10.0.0"

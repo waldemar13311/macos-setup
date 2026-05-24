@@ -1,0 +1,8 @@
+---
+- name: Base terminal setup
+  hosts: macos
+  become: false
+  gather_facts: true
+
+  roles:
+    - terminal_setup

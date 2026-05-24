@@ -1,0 +1,35 @@
+---
+terminal_setup_zsh_plugins:
+  - "ohmyzsh/ohmyzsh path:lib"                           # Базовые функции zsh
+  - "ohmyzsh/ohmyzsh path:plugins/git"                   # Авто дополнения для git
+  - "ohmyzsh/ohmyzsh path:plugins/ansible"               # Авто дополнения для ansible
+  - "ohmyzsh/ohmyzsh path:plugins/golang"                # Авто дополнения для go
+  - "ohmyzsh/ohmyzsh path:plugins/python"                # Для функции pyclean, и алиаса py
+  - "ohmyzsh/ohmyzsh path:plugins/pip"                   # Авто дополнения для pip
+  - "popstas/zsh-command-time"                           # Выводит время выполнения команды
+  - "ohmyzsh/ohmyzsh path:plugins/extract"               # Удобный распаковщик архивов
+  - "zsh-users/zsh-autosuggestions"                      # Подсказка-отображение последней команды при вводе
+  - "viasite-ansible/fzf-widgets"                        # fzf виджеты
+  - "zsh-users/zsh-syntax-highlighting"                  # Подцветка синтаксиса команды (ДОЛЖЕН ПОДКЛЮЧАТЬСЯ ПОСЛЕДНИМ)
+
+terminal_setup_modern_console_utils:
+  - "bat"         # Замена cat
+  - "eza"         # Замена ls
+  - "zoxide"      # Продвинутый cd
+  - "fd"          # Замена find
+  - "fzf"         # Полезные виджеты
+  - "trash-cli"   # Замена rm (для удаления файлов в корзину)
+
+terminal_setup_console_utils:
+  - "golang"          # Язык go
+  - "kubectl"         # K8s клиент
+  - "kubectx"         # Менеджер контекстов k8s + менеджер namespaces-ов k8s
+  - "jq"              # JSON-парсер
+  - "wget"            # Загрузчик файлов
+  - "ncdu"            # Анализатор занятого дискового пространства
+  - "tldr"            # Упрощенные и лаконичные man-страницы
+  - "uv"              # Современный менеджер пакетов для python
+  - "tenv"            # Универсальный установщик OpenTofu, Terraform, Terragrunt и Atmos
+  - "docker"          # Консольный Docker CLI клиент (команды docker ps, run, build)
+  - "docker-compose"  # v2 версия docker compose плагина
+  - "colima"          # Легковесный движок-контейнеризатор (замена Docker Desktop)

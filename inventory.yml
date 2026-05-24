@@ -1,4 +1,5 @@
 all:
   hosts:
-    master:
-      ansible_host: master.home
+    macos:
+      ansible_host: 192.168.64.77 # Замените на свой IP
+      ansible_user: user
