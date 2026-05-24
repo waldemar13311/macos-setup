@@ -30,3 +30,7 @@ ansible-playbook playbooks/desktop_apps_setup.ansible.yml
 ```
 
 Списки плагинов и пакетов можно менять в `roles/terminal_setup/defaults/main.yml`.
+
+## License
+
+This project is licensed under the AGPL-3.0 License - see the [LICENSE](LICENSE) file for details.
