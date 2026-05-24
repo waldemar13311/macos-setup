@@ -1,7 +1,7 @@
 [project]
-name = "my-zsh-installation"
+name = "macos-setup"
 version = "0.1.0"
-description = "Add your description here"
+description = "IaC macos usage"
 readme = "README.md"
 requires-python = ">=3.12,<3.14"
 dependencies = [

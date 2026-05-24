@@ -1,0 +1,3 @@
+*.ansible.yml linguist-language=Ansible
+*.yml linguist-language=Ansible
+inventory.yml linguist-language=YAML
