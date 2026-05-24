@@ -1,5 +1,5 @@
 - name: Base desktop apps installation
-  hosts: macos
+  hosts: macos # или localhost
   become: false
   gather_facts: true
 

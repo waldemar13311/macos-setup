@@ -1,6 +1,6 @@
 ---
 - name: Base terminal setup
-  hosts: macos
+  hosts: macos # или localhost
   become: false
   gather_facts: true
 
