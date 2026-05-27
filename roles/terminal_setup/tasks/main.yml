@@ -1,4 +1,11 @@
 ---
+- name: Silence login messages (hushlogin)
+  ansible.builtin.file:
+    path: "{{ [ansible_user_dir, '.hushlogin'] | path_join }}"
+    state: touch
+    mode: '0644'
+    owner: "{{ ansible_user_id }}"
+
 - name: Ensure Vim XDG directories exist
   ansible.builtin.file:
     path: "{{ item }}"
