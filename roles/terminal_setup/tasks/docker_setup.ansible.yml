@@ -35,9 +35,9 @@
 
 - name: Generate native Docker completions
   ansible.builtin.shell: |
-    docker completion zsh > "{{ [ansible_user_dir, '.zsh', 'completion', '_docker'] | path_join }}"
+    docker completion zsh > "{{ [terminal_setup_config_dir, 'completion', '_docker'] | path_join }}"
   environment:
     PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
   # таск пропустится (ok), если файл уже существует
   args:
-    creates: "{{ [ansible_user_dir, '.zsh', 'completion', '_docker'] | path_join }}"
+    creates: "{{ [terminal_setup_config_dir, 'completion', '_docker'] | path_join }}"

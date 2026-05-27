@@ -4,8 +4,8 @@
     cmd: >
       zsh -c "source $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh &&
       antidote bundle
-      < {{ ansible_user_dir }}/.zsh_plugins.txt
-      > {{ ansible_user_dir }}/.zsh_plugins.zsh"
+      < {{ [terminal_setup_config_dir, '.zsh_plugins.txt'] | path_join }}
+      > {{ [terminal_setup_config_dir, '.zsh_plugins.zsh'] | path_join }}"
   environment:
     PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
   changed_when: true

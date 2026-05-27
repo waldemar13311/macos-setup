@@ -1,3 +1,4 @@
+# --- Кастомная тема ---
 # Based on bira theme
 setopt prompt_subst
 

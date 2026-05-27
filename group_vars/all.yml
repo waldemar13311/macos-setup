@@ -1,0 +1,4 @@
+terminal_setup_desktop_casks:
+  - google-chrome
+  - visual-studio-code
+  - font-jetbrains-mono-nerd-font

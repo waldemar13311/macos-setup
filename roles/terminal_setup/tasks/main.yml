@@ -1,60 +1,99 @@
 ---
-- name: Remove old Zsh completion caches
+- name: Ensure Vim XDG directories exist
   ansible.builtin.file:
     path: "{{ item }}"
-    state: absent
+    state: directory
+    mode: '0755'
+    owner: "{{ ansible_user_id }}"
   loop:
-    - "{{ [ansible_user_dir, '.zcompdump'] | path_join }}"
-    - "{{ [ansible_user_dir, '.zcompdump.zwc'] | path_join }}"
-  changed_when: false
+    - "{{ [ansible_user_dir, '.config/vim'] | path_join }}"
+    - "{{ [ansible_user_dir, '.cache/vim/swap'] | path_join }}"
+    - "{{ [ansible_user_dir, '.cache/vim/undo'] | path_join }}"
+    - "{{ [ansible_user_dir, '.cache/vim/backup'] | path_join }}"
+
+- name: Remove old global .vimrc to avoid conflicts with VIMINIT
+  ansible.builtin.file:
+    path: "{{ [ansible_user_dir, '.vimrc'] | path_join }}"
+    state: absent
+
+- name: Setup vim settings via template to XDG config directory
+  ansible.builtin.copy:
+    src: ".vimrc"
+    dest: "{{ [ansible_user_dir, '.config/vim', '.vimrc'] | path_join }}"
+    mode: "0644"
+    owner: "{{ ansible_user_id }}"
+
+- name: Find all zcompdump files
+  ansible.builtin.find:
+    paths: "{{ ansible_user_dir }}"
+    depth: 5
+    patterns: ".zcompdump*"
+    recurse: true
+    file_type: file
+  register: found_zcompdump_files
+
+- name: Remove found zcompdump files
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ found_zcompdump_files.files }}"
 
 - name: Install antidote (macOS)
   ansible.builtin.package:
     name: antidote
     use: homebrew
     state: present
-  when: ansible_os_family == "Darwin"
 
 - name: Install console utilities (macOS)
   ansible.builtin.package:
     name: "{{ terminal_setup_modern_console_utils + terminal_setup_console_utils }}"
     use: homebrew
     state: present
-  when: ansible_os_family == "Darwin"
 
-- name: Setup vim settings via template
-  ansible.builtin.copy:
-    src: ".vimrc"
-    dest: "{{ [ansible_user_dir, '.vimrc'] | path_join }}"
-    mode: "0644"
-    owner: "{{ ansible_user_id }}"
+- name: Ensure zsh XDG directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ terminal_setup_config_dir }}"
+    - "{{ terminal_setup_cache_dir }}"
+    - "{{ terminal_setup_state_dir }}"
+    - "{{ terminal_setup_data_dir }}"
 
-- name: Copy my custom theme to ~/.zsh-my-gnzh-theme.zsh-theme
+- name: Deploy .zshenv to the HOME (the XDG anchor)
   ansible.builtin.copy:
-    src: "files/.zsh-my-gnzh-theme.zsh-theme"
-    dest: "{{ [ansible_user_dir, '.zsh-my-gnzh-theme.zsh-theme'] | path_join }}"
+    src: .zshenv
+    dest: "{{ [ansible_user_dir, '.zshenv'] | path_join }}"
     mode: '0644'
-  become: false
 
-- name: Create .zsh_plugins.txt from template
+- name: Create .zsh_plugins.txt from template ({{ [terminal_setup_config_dir, '.zsh_plugins.txt'] | path_join }})
   ansible.builtin.copy:
-    dest: "{{ [ansible_user_dir, '.zsh_plugins.txt'] | path_join }}"
+    dest: "{{ [terminal_setup_config_dir, '.zsh_plugins.txt'] | path_join }}"
     content: "{{ terminal_setup_zsh_plugins | join('\n') }}\n"
     mode: "0644"
     owner: "{{ ansible_user_id }}"
   notify: Initialize Antidote plugins
 
-- name: Ensure Antidote is sourced in .zshrc
+- name: Copy zsh configs to ~/.config/zsh
   ansible.builtin.copy:
-    src: ".zshrc"
-    dest: "{{ [ansible_user_dir, '.zshrc'] | path_join }}"
+    src: "{{ item }}"
+    dest: "{{ [terminal_setup_config_dir, item] | path_join }}"
     mode: "0644"
     owner: "{{ ansible_user_id }}"
+  loop: "{{ terminal_setup_zsh_config_files }}"
   notify: Initialize Antidote plugins
+
+- name: Move old .zsh_history file to XDG directory
+  ansible.builtin.command: mv "{{ [ansible_user_dir, '.zsh_history'] | path_join }}" "{{ [terminal_setup_state_dir, 'history'] | path_join }}"
+  args:
+    creates: "{{ [terminal_setup_state_dir, 'history'] | path_join }}"
+    removes: "{{ [ansible_user_dir, '.zsh_history'] | path_join }}"
+  failed_when: false
 
 - name: Create local Zsh completion directory
   ansible.builtin.file:
-    path: "{{ [ansible_user_dir, '.zsh', 'completion'] | path_join }}"
+    path: "{{ [terminal_setup_config_dir, 'completion'] | path_join }}"
     state: directory
     mode: "0755"
 
