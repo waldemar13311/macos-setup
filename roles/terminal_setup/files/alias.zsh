@@ -22,6 +22,8 @@ alias kns="kubens"
 
 alias man=tldr
 
+alias python="python"
+
 # Управление Docker-окружением (Colima)
 alias dstart="colima start --cpus 4 --memory 8 --disk 60"
 alias dstop="colima stop"
