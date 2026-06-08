@@ -5,6 +5,8 @@
     state: touch
     mode: '0644'
     owner: "{{ ansible_user_id }}"
+    modification_time: preserve
+    access_time: preserve
 
 - name: Ensure Vim XDG directories exist
   ansible.builtin.file:
