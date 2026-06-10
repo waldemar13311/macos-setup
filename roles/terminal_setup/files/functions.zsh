@@ -96,7 +96,7 @@ treecat() {
     local ignore_name
 
     # Список игнорирования
-    local ignore_dirs=(.git node_modules .venv __pycache__ .idea .ansible .env)
+    local ignore_dirs=(.git node_modules .venv __pycache__ .idea .ansible .env .terraform .cache)
 
     items=(
         "$current_dir"/*(N)
