@@ -1,0 +1,23 @@
+- name: Ensure Vim XDG directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+    owner: "{{ ansible_user_id }}"
+  loop:
+    - "{{ [ansible_user_dir, '.config/vim'] | path_join }}"
+    - "{{ [ansible_user_dir, '.cache/vim/swap'] | path_join }}"
+    - "{{ [ansible_user_dir, '.cache/vim/undo'] | path_join }}"
+    - "{{ [ansible_user_dir, '.cache/vim/backup'] | path_join }}"
+
+- name: Remove old global .vimrc to avoid conflicts with VIMINIT
+  ansible.builtin.file:
+    path: "{{ [ansible_user_dir, '.vimrc'] | path_join }}"
+    state: absent
+
+- name: Setup vim settings via template to XDG config directory
+  ansible.builtin.copy:
+    src: ".vimrc"
+    dest: "{{ [ansible_user_dir, '.config/vim', '.vimrc'] | path_join }}"
+    mode: "0644"
+    owner: "{{ ansible_user_id }}"

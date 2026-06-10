@@ -2,7 +2,7 @@
 alias ls="eza --icons=always"
 alias ll="eza -lAgi --group-directories-first --classify=always --icons=always --time-style=long-iso"
 
-alias tree="eza --tree -A --classify=always --icons=always --group-directories-first"
+alias tree="eza --tree -A --classify=always --icons=always --group-directories-first --ignore-glob='.git|node_modules|.venv|__pycache__|.idea|.ansible'"
 
 alias cat="bat -pp"
 

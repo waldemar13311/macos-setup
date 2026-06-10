@@ -81,3 +81,69 @@ my_pbcopy() {
 
     echo "✅ Скопировано в буфер обмена"
 }
+
+treecat() {
+  local root="${1:-.}"
+
+  tree "$root"
+
+  dump_dir() {
+    local current_dir="$1" # Переименовали, чтобы не было конфликтов
+    local items=()
+    local dirs=()
+    local files=()
+    local item
+    local ignore_name
+
+    # Список игнорирования
+    local ignore_dirs=(.git node_modules .venv __pycache__ .idea .ansible .env)
+
+    items=(
+        "$current_dir"/*(N)
+        "$current_dir"/.*(N)
+    )
+
+    for item in "${items[@]}"; do
+      # Пропускаем ссылки на текущую и родительскую директории
+      [[ ${item:t} == "." || ${item:t} == ".." ]] && continue
+
+      # Проверяем имя файла/папки (${item:t} достает чистое имя, например ".ansible")
+      # Если имя есть в списке ignore_dirs — полностью пропускаем этот элемент
+      for ignore_name in "${ignore_dirs[@]}"; do
+          [[ "${item:t}" == "$ignore_name" ]] && continue 2
+      done
+
+      if [[ -d "$item" ]]; then
+          dirs+=("$item")
+      else
+          files+=("$item")
+      fi
+    done
+
+    dirs=(${(on)dirs})
+    files=(${(on)files})
+
+    # Сначала рекурсивно идем по каталогам
+    for item in "${dirs[@]}"; do
+        dump_dir "$item"
+    done
+
+    # Потом выводим файлы
+    for item in "${files[@]}"; do
+        echo
+        echo "========================================"
+        echo "=== Файл: $item ==="
+        echo "========================================"
+        echo
+
+        if file --brief --mime "$item" | grep -q '^text/'; then
+            bat --style=plain --paging=never "$item"
+        else
+            echo "[binary file skipped]"
+        fi
+    done
+  }
+
+  dump_dir "$root"
+}
+
