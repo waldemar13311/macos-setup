@@ -1,0 +1,5 @@
+НАСТРОИТЬ .terraformrc
+export TFENV_REMOTE=https://hashicorp-releases.yandexcloud.net
+
+УДАЛЯТЬ ЭТОТ ФАЙЛ ПРИ НАСТРОЙКЕ GIT
+ /opt/homebrew/share/zsh/site-functions/_git
