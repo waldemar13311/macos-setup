@@ -28,3 +28,5 @@ alias python="python3"
 alias dstart="colima start --cpus 4 --memory 8 --disk 60"
 alias dstop="colima stop"
 alias dstat="colima status"
+
+alias dnscacheclean="sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder"
