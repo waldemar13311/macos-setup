@@ -10,3 +10,6 @@ export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
 
 # Настройки vim
 export VIMINIT='source $XDG_CONFIG_HOME/vim/.vimrc'
+
+# Нужно для ansible
+export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
