@@ -36,7 +36,8 @@ terminal_setup_console_utils:
   - "colima"          # Легковесный движок-контейнеризатор (замена Docker Desktop)
   - "vim"             # Текстовый редактор
   - "htop"            # Консольный диспетчер задач
-  - "fastfetch"        # Вывод базовой информации о системе
+  - "fastfetch"       # Вывод базовой информации о системе
+  - "gitlab-ci-local" # Для локального запуска gitlab pipeline
 
 # Определяем базовые пути
 terminal_setup_config_dir: "{{ [ansible_user_dir, '.config/zsh'] | path_join }}"
