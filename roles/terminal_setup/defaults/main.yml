@@ -38,6 +38,7 @@ terminal_setup_console_utils:
   - "htop"            # Консольный диспетчер задач
   - "fastfetch"       # Вывод базовой информации о системе
   - "gitlab-ci-local" # Для локального запуска gitlab pipeline
+  - "curl"            # Не apple-овский curl
 
 # Определяем базовые пути
 terminal_setup_config_dir: "{{ [ansible_user_dir, '.config/zsh'] | path_join }}"
