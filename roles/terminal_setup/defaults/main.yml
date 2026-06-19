@@ -33,6 +33,7 @@ terminal_setup_console_utils:
   - "tenv"            # Универсальный установщик OpenTofu, Terraform, Terragrunt и Atmos
   - "docker"          # Консольный Docker CLI клиент (команды docker ps, run, build)
   - "docker-compose"  # v2 версия docker compose плагина
+  - "docker-buildx"   # buildx плагин для docker
   - "colima"          # Легковесный движок-контейнеризатор (замена Docker Desktop)
   - "vim"             # Текстовый редактор
   - "htop"            # Консольный диспетчер задач
