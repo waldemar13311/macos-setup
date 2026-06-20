@@ -1,5 +1,6 @@
 # --- Кастомные функции ---
-# === path ===
+
+# region === path ===
 # path - Вывод полных путей для файлов, папок и шаблонов (масок)
 # Использование: path имя_файла или path шаблон*
 path_run() {
@@ -40,8 +41,9 @@ alias path='noglob path_run'
 
 # Привязка автодополнения (Tab работает как у cd/ls)
 compdef _files path path_run
+#endregion
 
-# === cpath ===
+# region === cpath ===
 # cpath - Как path только копирует вывод в буфер обмена
 # Функция-обертка для копирования
 cpath_run() {
@@ -66,22 +68,28 @@ alias cpath='noglob cpath_run'
 
 # Привязка автодополнения для функции и алиаса
 compdef _files cpath cpath_run
+#endregion
 
-# === iconclean ===
-# очищает stdout от специальных unicode символов
+# region === iconclean ===
+# iconclean - очищает stdout от специальных unicode символов
 # Пример использования: tree .config | iconclean
 iconclean() {
     perl -CS -pe 's/[\x{E000}-\x{F8FF}\x{F0000}-\x{FFFFF}]\s?//g'
 }
+# endregion
 
-# === my_pbcopy ===
-# Функция-обертка для копирования
+# region === my_pbcopy ===
+# Функция-обертка для копирования (на неё есть алиас)
 my_pbcopy() {
     pbcopy
 
     echo "✅ Скопировано в буфер обмена"
 }
+# endregion
 
+# region === treecat ===
+# treecat - Вывод содержимого каталога в древовидной структуре, а затем вывод содержимого каждого файла
+# Использование: treecat имя_каталога
 treecat() {
   local root="${1:-.}"
 
@@ -146,4 +154,41 @@ treecat() {
 
   dump_dir "$root"
 }
+# endregion
 
+# region === tryssh ===
+# tryssh - Аналог ssh (ssh в цикле), который не отваливается по таймауту,
+# а просто заново начинает подключение (удобно при перезагрузке сервера).
+# 1. Сама функция с циклом
+tryssh () {
+  # Ищем хост: берем последний аргумент, не начинающийся с дефиса,
+  # и убираем из него "user@", если он есть
+  local hostname
+  for arg in "$@"; do
+    [[ "$arg" != -* ]] && hostname="${arg##*@}"
+  done
+
+  echo "Подключение к ${hostname}..."
+
+  while true; do
+    # Пытаемся выполнить ssh со всеми переданными аргументами
+    ssh "$@"
+
+    # Получаем код возврата (255 обычно означает ошибку связи)
+    local status=$?
+
+    if [ $status -ne 255 ]; then
+      # Если код не 255, значит подключение состоялось и мы вышли сами
+      break
+    fi
+
+    echo "Ошибка подключения. Повтор через 3 секунды..."
+    sleep 3
+  done
+}
+
+# 2. Копирование автодополнения от ssh к tryssh (для Zsh)
+if [ -n "$ZSH_VERSION" ]; then
+  compdef tryssh=ssh
+fi
+# endregion
