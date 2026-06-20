@@ -56,3 +56,5 @@ terminal_setup_zsh_config_files:
   - "alias.zsh"
   - "functions.zsh"
   - "zsh-my-gnzh-theme.zsh-theme"
+
+terminal_setup_terraform_mirror_url: "https://terraform-mirror.yandexcloud.net/"

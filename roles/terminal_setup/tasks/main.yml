@@ -11,6 +11,12 @@
 - name: Configure Vim
   ansible.builtin.include_tasks: vim_setup.ansible.yml
 
+- name: Configure git
+  ansible.builtin.include_tasks: git_setup.ansible.yml
+
+- name: Configure terraform
+  ansible.builtin.include_tasks: terraform_setup.ansible.yml
+
 - name: Find all zcompdump files
   ansible.builtin.find:
     paths: "{{ ansible_user_dir }}"

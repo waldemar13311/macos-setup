@@ -1,0 +1,4 @@
+- name: Remove the conflicting Homebrew Git completion script
+  ansible.builtin.file:
+    path: /opt/homebrew/share/zsh/site-functions/_git
+    state: absent
