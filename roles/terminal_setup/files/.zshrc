@@ -42,6 +42,9 @@ source "$ZDOTDIR/hotkeys.zsh"
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=15        # Отсекает автодополнение для длинных вставок (больше 15-ти символов)
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=240"  # Цвет текста-подсказки (темно-серый/графитовый цвет)
 
+# Настройки для внешнего вида zi
+export _ZO_FZF_OPTS="--height 100% --layout=reverse --border --preview-window=35% --preview='eza -1 --icons=always --color=always {2} 2>/dev/null || ls -1 --color=always {2} 2>/dev/null'"
+
 # Инициализация утилиты zoxide/z
 if command -v zoxide &> /dev/null; then
     eval "$(zoxide init zsh)"
