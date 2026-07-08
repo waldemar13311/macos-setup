@@ -20,7 +20,6 @@ terminal_setup_modern_console_utils:
   - "fd"          # Замена find
   - "fzf"         # Полезные виджеты
   - "trash-cli"   # Замена rm (для удаления файлов в корзину)
-  - "ripgrep"     # Замена grep (работает быстрее)
 
 terminal_setup_console_utils:
   - "golang"          # Язык go
