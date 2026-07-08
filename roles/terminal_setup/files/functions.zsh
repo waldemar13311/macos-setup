@@ -87,73 +87,169 @@ my_pbcopy() {
 }
 # endregion
 
-# region === treecat ===
-# treecat - Вывод содержимого каталога в древовидной структуре, а затем вывод содержимого каждого файла
-# Использование: treecat имя_каталога
-treecat() {
-  local root="${1:-.}"
+# region === tree wrapper ===
+# tree - Умная обёртка над eza для вывода красивого дерева с поддержкой флага -i/--ignore
+tree() {
+  local root=""
+  local -a ignore_list=()
+  local -a eza_args=()
 
-  tree "$root"
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -i|--ignore)
+        if [[ -n "$2" && "$2" != -* ]]; then
+          ignore_list+=("$2")
+          shift 2
+        else
+          echo "Ошибка: флаг $1 требует аргумент." >&2
+          return 1
+        fi
+        ;;
+      -i=*|--ignore=*)
+        ignore_list+=("${1#*=}")
+        shift
+        ;;
+      -*)
+        eza_args+=("$1")
+        shift
+        ;;
+      *)
+        if [[ -z "$root" ]]; then
+          root="$1"
+        else
+          echo "Ошибка: указано слишком много аргументов ($1)" >&2
+          return 1
+        fi
+        shift
+        ;;
+    esac
+  done
+
+  root="${root:-.}"
+
+  # Добавляем --ignore-glob только если список исключений не пустой
+  if [[ ${#ignore_list[@]} -gt 0 ]]; then
+    eza_args+=("--ignore-glob=${(j:|:)ignore_list}")
+  fi
+
+  command eza --tree -A \
+    --classify=always \
+    --icons=always \
+    --group-directories-first \
+    "${eza_args[@]}" \
+    "$root"
+}
+
+_tree_wrapper() {
+  _arguments -s \
+    '*'{-i,--ignore}'[Игнорировать файл или каталог]:паттерн:_files' \
+    '*:аргументы:_files'
+}
+compdef _tree_wrapper tree
+# endregion
+
+# region === treecat ===
+# treecat - Вывод дерева каталога и содержимого файлов с возможностью игнорирования
+# Использование: treecat [-i|--ignore <название>] [каталог]
+treecat() {
+  local root=""
+  local -a ignore_dirs=()
+  local item
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -i|--ignore)
+        if [[ -n "$2" && "$2" != -* ]]; then
+          ignore_dirs+=("$2")
+          shift 2
+        else
+          echo "Ошибка: флаг $1 требует аргумент." >&2
+          return 1
+        fi
+        ;;
+      -i=*|--ignore=*)
+        ignore_dirs+=("${1#*=}")
+        shift
+        ;;
+      -*)
+        echo "Неизвестный флаг: $1" >&2
+        return 1
+        ;;
+      *)
+        if [[ -z "$root" ]]; then
+          root="$1"
+        else
+          echo "Ошибка: указано слишком много аргументов ($1)" >&2
+          return 1
+        fi
+        shift
+        ;;
+    esac
+  done
+
+  root="${root:-.}"
+
+  local -a tree_args=()
+  if [[ ${#ignore_dirs[@]} -gt 0 ]]; then
+    tree_args+=("-I" "${(j:|:)ignore_dirs}")
+  fi
+  tree "${tree_args[@]}" "$root"
 
   dump_dir() {
-    local current_dir="$1" # Переименовали, чтобы не было конфликтов
-    local items=()
-    local dirs=()
-    local files=()
-    local item
-    local ignore_name
-
-    # Список игнорирования
-    local ignore_dirs=(.git node_modules .venv __pycache__ .idea .ansible .env .terraform .cache)
+    local current_dir="$1"
+    local -a items dirs files
+    local item ignore_name
 
     items=(
-        "$current_dir"/*(N)
-        "$current_dir"/.*(N)
+      "$current_dir"/*(N)
+      "$current_dir"/.*(N)
     )
 
     for item in "${items[@]}"; do
-      # Пропускаем ссылки на текущую и родительскую директории
-      [[ ${item:t} == "." || ${item:t} == ".." ]] && continue
+      [[ "${item:t}" == "." || "${item:t}" == ".." ]] && continue
 
-      # Проверяем имя файла/папки (${item:t} достает чистое имя, например ".ansible")
-      # Если имя есть в списке ignore_dirs — полностью пропускаем этот элемент
       for ignore_name in "${ignore_dirs[@]}"; do
-          [[ "${item:t}" == "$ignore_name" ]] && continue 2
+        [[ "${item:t}" == "$ignore_name" ]] && continue 2
       done
 
       if [[ -d "$item" ]]; then
-          dirs+=("$item")
+        dirs+=("$item")
       else
-          files+=("$item")
+        files+=("$item")
       fi
     done
 
     dirs=(${(on)dirs})
     files=(${(on)files})
 
-    # Сначала рекурсивно идем по каталогам
     for item in "${dirs[@]}"; do
-        dump_dir "$item"
+      dump_dir "$item"
     done
 
-    # Потом выводим файлы
     for item in "${files[@]}"; do
-        echo
-        echo "========================================"
-        echo "=== Файл: $item ==="
-        echo "========================================"
-        echo
+      echo
+      echo "========================================"
+      echo "=== Файл: $item ==="
+      echo "========================================"
+      echo
 
-        if file --brief --mime "$item" | grep -q '^text/'; then
-            bat --style=plain --paging=never "$item"
-        else
-            echo "[binary file skipped]"
-        fi
+      if file --brief --mime "$item" | grep -qE '^text/|/json|/javascript'; then
+        bat --style=plain --paging=never "$item"
+      else
+        echo "[binary file skipped]"
+      fi
     done
   }
 
   dump_dir "$root"
 }
+
+_treecat() {
+  _arguments -s \
+    '*'{-i,--ignore}'[Игнорировать файл или каталог]:паттерн:_files' \
+    '1:каталог:_files -/'
+}
+compdef _treecat treecat
 # endregion
 
 # region === tryssh ===

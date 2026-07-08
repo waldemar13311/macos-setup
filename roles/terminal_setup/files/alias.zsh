@@ -2,8 +2,6 @@
 alias ls="eza --icons=always"
 alias ll="eza -lAgi --group-directories-first --classify=always --icons=always --time-style=long-iso"
 
-alias tree="eza --tree -A --classify=always --icons=always --group-directories-first --ignore-glob='.git|node_modules|.venv|__pycache__|.idea|.ansible|.terraform|.cache'"
-
 alias cat="bat -pp"
 
 alias less="bat --pager 'less -R'"
@@ -11,8 +9,6 @@ alias less="bat --pager 'less -R'"
 alias rm="trash"
 
 alias copy="my_pbcopy"
-
-alias grep="rg"
 
 alias diff="git diff --no-index --color"
 
