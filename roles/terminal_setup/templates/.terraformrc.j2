@@ -5,6 +5,12 @@ provider_installation {
     include = ["registry.opentofu.org/todoroff/multipass"]
   }
 
+  # Локальное зеркало для провайдера opentofu/vault
+  filesystem_mirror {
+    path    = "{{ ansible_user_dir}}/.terraform.d/plugins"
+    include = ["registry.opentofu.org/opentofu/vault"]
+  }
+
   # The Yandex Cloud зеркало для всех остальных провайдеров
   network_mirror {
     url     = "{{ terminal_setup_terraform_mirror_url}}"
