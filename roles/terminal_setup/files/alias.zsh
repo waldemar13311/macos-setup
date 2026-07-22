@@ -21,9 +21,9 @@ alias man=tldr
 alias python="python3"
 
 # Управление Docker-окружением (Colima)
-alias dstart="colima start --cpus 4 --memory 8 --disk 60"
-alias dstop="colima stop"
-alias dstat="colima status"
+alias docker-start="colima start --cpus 4 --memory 8 --disk 60"
+alias docker-stop="colima stop"
+alias docker-stat="colima status"
 
 # In networking, the official term for emptying a cache is "flushing"
 alias flushdns="sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder"
