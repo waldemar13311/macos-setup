@@ -11,7 +11,19 @@ provider_installation {
     include = ["registry.opentofu.org/opentofu/vault"]
   }
 
-  # The Yandex Cloud зеркало для всех остальных провайдеров
+  # Локальное зеркало для провайдера gitlabhq/gitlab
+    filesystem_mirror {
+    path    = "{{ ansible_user_dir}}/.terraform.d/plugins"
+    include = ["registry.opentofu.org/gitlabhq/gitlab"]
+  }
+
+  # Локальное зеркало для провайдера opentofu/null
+  filesystem_mirror {
+    path    = "{{ ansible_user_dir}}/.terraform.d/plugins"
+    include = ["registry.opentofu.org/opentofu/null"]
+  }
+
+  # Yandex Cloud зеркало для всех остальных провайдеров
   network_mirror {
     url     = "{{ terminal_setup_terraform_mirror_url}}"
     include = ["registry.terraform.io/*/*"]

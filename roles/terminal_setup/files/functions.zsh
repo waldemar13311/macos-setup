@@ -288,3 +288,12 @@ if [ -n "$ZSH_VERSION" ]; then
   compdef tryssh=ssh
 fi
 # endregion
+
+# region === http-proxy-vars-example ===
+# http-proxy-vars-example - Выводит, какие переменные нужно задать для использования http прокси в терминале
+http-proxy-vars-example () {
+  echo 'Для использования http proxy в терминале задайте переменные по аналогии:'
+  echo 'export http_proxy="http://myuser:mypassword123@proxy.home:3128 # для http сайтов'
+  echo 'export https_proxy="http://myuser:mypassword123@proxy.home:3128 # для https сайтов'
+}
+# endregion
