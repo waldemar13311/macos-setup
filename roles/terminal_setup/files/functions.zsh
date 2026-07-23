@@ -293,7 +293,16 @@ fi
 # http-proxy-vars-example - Выводит, какие переменные нужно задать для использования http прокси в терминале
 http-proxy-vars-example () {
   echo 'Для использования http proxy в терминале задайте переменные по аналогии:'
-  echo 'export http_proxy="http://myuser:mypassword123@proxy.home:3128 # для http сайтов'
-  echo 'export https_proxy="http://myuser:mypassword123@proxy.home:3128 # для https сайтов'
+  echo 'export http_proxy="http://myuser:mypassword123@proxy.home:3128" # для http сайтов'
+  echo 'export https_proxy="http://myuser:mypassword123@proxy.home:3128" # для https сайтов'
+}
+# endregion
+
+# region === https-proxy-vars-example ===
+# https-proxy-vars-example - Выводит, какие переменные нужно задать для использования https прокси в терминале
+https-proxy-vars-example () {
+  echo 'Для использования https proxy в терминале задайте переменные по аналогии:'
+  echo 'export http_proxy="https://myuser:mypassword123@proxy.home:3129" # для http сайтов'
+  echo 'export https_proxy="https://myuser:mypassword123@proxy.home:3129" # для https сайтов'
 }
 # endregion
