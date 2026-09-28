@@ -30,7 +30,10 @@ source $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh
 antidote load
 
 # Инициализируем автодополнения
-compinit -d "$XDG_CACHE_HOME/zsh/.zcompdump"
+# -C: берём готовый дамп .zcompdump, не пересканируем весь fpath повторно
+# (первый compinit выше уже собрал функции для compdef; роль чистит дамп
+# при изменении конфигов, так что после обновлений всё пересоберётся)
+compinit -C -d "$XDG_CACHE_HOME/zsh/.zcompdump"
 
 source "$ZDOTDIR/fzf_options.zsh"
 
