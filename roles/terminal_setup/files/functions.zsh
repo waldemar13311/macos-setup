@@ -3,6 +3,8 @@
 # region === path ===
 # path - Вывод полных путей для файлов, папок и шаблонов (масок)
 # Использование: path имя_файла или path шаблон*
+# В терминал выводится с финальным \n, а в пайп (| copy) — без него,
+# чтобы в буфер обмена попадал чистый путь.
 path_run() {
   if [[ -z "$1" ]]; then
     echo "Использование: path шаблон или path папка/шаблон"
@@ -11,29 +13,96 @@ path_run() {
 
   local arg="$1"
 
-  # 1. Отсекаем финальный слэш, если только это не корень "/"
+  # 1. Точка и «точка-точка» — просто выдаем абсолютный путь текущей
+  # или родительской директории
+  if [[ "$arg" == "." || "$arg" == ".." ]]; then
+    local target="${arg:a}"
+
+    # В терминал отдаем через fd — он сам раскрасит директорию так же,
+    # как и в основном выводе (папки берюзовым)
+    if [[ -t 1 && "$target" != "/" ]]; then
+      fd --hidden --no-ignore --absolute-path --max-depth 1 --glob "${target:t}" --type d "${target:h}"
+      return 0
+    fi
+
+    # В пайп — чистый путь без \n
+    printf '%s' "$target"
+    return 0
+  fi
+
+  # 2. Отсекаем финальный слэш, если только это не корень "/"
   # Это спасает от превращения 'folder/' в 'folder/*'
   if [[ "$arg" != "/" && "$arg" == */ ]]; then
     arg="${arg%/}"
   fi
 
+  # 3. Если в аргументе нет метасимволов (*, ?, [) — это конкретный путь.
+  # Проверяем существование: если пути нет, сообщаем об этом так же, как cd
+  if [[ "$arg" != *[*\?\[]* ]]; then
+    if [[ ! -e "$arg" ]]; then
+      echo "path: no such file or directory: $arg" >&2
+      return 1
+    fi
+
+    # Нормализуем путь (схлопывает '.', '..', 'dir/.'): macos-setup/. -> .../macos-setup.
+    # Без этого fd с glob-именем "." ничего не найдет
+    local target="${arg:a}"
+
+    # В терминал отдаем через fd — он раскрасит путь (папки берюзовым,
+    # файлы по LS_COLORS), как и в основном выводе
+    if [[ -t 1 && "$target" != "/" ]]; then
+      fd --hidden --no-ignore --absolute-path --max-depth 1 --glob "${target:t}" --type d "${target:h}"
+      fd --hidden --no-ignore --absolute-path --max-depth 1 --glob "${target:t}" --type f "${target:h}"
+      return 0
+    fi
+
+    # В пайп — чистый путь без \n (для "/" fd не подходит, см. выше)
+    printf '%s' "$target"
+    return 0
+  fi
+
+  # 4. Иначе это шаблон: делим аргумент на каталог и маску
   local search_dir="."
   local pattern="$arg"
 
-  # 2. Если в аргументе есть слэш (например, path/to/folder или Desktop/*)
   if [[ "$arg" == */* ]]; then
     search_dir="${arg%/*}"
     [[ -z "$search_dir" ]] && search_dir="/"
-    
+
     pattern="${arg##*/}"
     [[ -z "$pattern" ]] && pattern="*"
   fi
 
-  # 3. Сначала выводим директории (--type d)
-  fd --hidden --no-ignore --absolute-path --max-depth 1 --glob "$pattern" --type d "$search_dir"
-  
-  # 4. Затем выводим всё остальное, кроме директорий (--type f)
-  fd --hidden --no-ignore --absolute-path --max-depth 1 --glob "$pattern" --type f "$search_dir"
+  # 5. Если каталог из шаблона не существует (например, path nodir/*.zsh) —
+  # сообщаем об этом так же, как это делает cd, и выходим
+  if [[ ! -d "$search_dir" ]]; then
+    echo "path: no such file or directory: $search_dir" >&2
+    return 1
+  fi
+
+  # 6. Захватываем вывод fd: в терминале — с --color=always (иначе fd, увидев
+  # пайп, сбросит раскраску), в пайп — без цвета
+  local color_flag=()
+  [[ -t 1 ]] && color_flag=(--color=always)
+
+  local output
+  output="$(
+    fd --hidden --no-ignore --absolute-path --max-depth 1 "${color_flag[@]}" --glob "$pattern" --type d "$search_dir"
+    fd --hidden --no-ignore --absolute-path --max-depth 1 "${color_flag[@]}" --glob "$pattern" --type f "$search_dir"
+  )"
+
+  # 7. Шаблон не совпал ни с чем — сообщаем, как это делает zsh для cd
+  if [[ -z "$output" ]]; then
+    echo "path: no matches found: $arg" >&2
+    return 1
+  fi
+
+  # 8. Печатаем: в терминал с \n, в пайп — без него
+  if [[ -t 1 ]]; then
+    printf '%s\n' "$output"
+  else
+    printf '%s' "$output"
+  fi
 }
 
 # Алиас для работы, который защищает звездочки от Zsh
@@ -45,22 +114,22 @@ compdef _files path path_run
 
 # region === cpath ===
 # cpath - Как path только копирует вывод в буфер обмена
-# Функция-обертка для копирования
+# (path_run сама отдает вывод без \\n, когда stdout не терминал)
 cpath_run() {
-  # Если аргументов нет, вызываем без pbcopy, чтобы сообщение об ошибке вывелось на экран
+  # Если аргументов нет, вызываем без пайпа, чтобы usage вывелся на экран
   if [[ -z "$1" ]]; then
     path_run
     return 1
   fi
 
-  # Захватываем вывод функции в переменную (баш автоматически отрезает финальные \n при таком захвате)
-  local current_path
-  current_path=$(path_run "$@")
+  # При ошибке path_run (нет пути/совпадений) ничего не копируем:
+  # stderr path_run уже вывелся, а пайп вернул бы пустоту в буфер
+  local output
+  if ! output="$(path_run "$@")"; then
+    return 1
+  fi
 
-  # Через printf передаем строку строго БЕЗ \n в конце прямо в pbcopy
-  printf "%s" "$current_path" | pbcopy
-
-  echo "✅ Скопировано в буфер обмена"
+  printf '%s' "$output" | my_pbcopy
 }
 
 # Алиас для cpath с такой же защитой звездочек
