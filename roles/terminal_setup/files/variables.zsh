@@ -6,7 +6,13 @@ export EDITOR="vim"
 # Исполняемые файлы пользователя
 export PATH="$HOME/.local/bin:$PATH"
 # curl из homebrew, так как стандартный mac-овский не удобный
-export PATH="/opt/homebrew/opt/curl/bin:$PATH"
+# /opt/homebrew - на Apple Silicon, 
+# /usr/local - на Intel Mac
+if [[ -d "/opt/homebrew/opt/curl/bin" ]]; then
+    export PATH="/opt/homebrew/opt/curl/bin:$PATH"
+elif [[ -d "/usr/local/opt/curl/bin" ]]; then
+    export PATH="/usr/local/opt/curl/bin:$PATH"
+fi
 
 # Зеркала для tenv
 export TENV_TERRAFORM_REMOTE="https://hashicorp-releases.yandexcloud.net"
