@@ -1,8 +1,8 @@
 provider_installation {
   # Локальное зеркало для провайдера todoroff/multipass
   # include перечисляет провайдера под обоими адресами реестра:
-  # registry.opentofu.org — для конфигов tofu,
-  # registry.terraform.io — для конфигов со стандартными адресами.
+  # registry.opentofu.org - для конфигов tofu,
+  # registry.terraform.io - для конфигов со стандартными адресами.
   filesystem_mirror {
     path = "{{ ansible_user_dir }}/.terraform.d/plugins"
     include = [
