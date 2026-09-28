@@ -34,10 +34,11 @@
       }}
 
 - name: Generate native Docker completions
+  # Перегенерируем при каждом прогоне: после обновления docker CLI старый
+  # файл автодополнения молча устаревает. changed_when не даёт таску шуметь,
+  # если сгенерированный файл не изменился
   ansible.builtin.shell: |
     docker completion zsh > "{{ [terminal_setup_config_dir, 'completion', '_docker'] | path_join }}"
   environment:
     PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
-  # таск пропустится (ok), если файл уже существует
-  args:
-    creates: "{{ [terminal_setup_config_dir, 'completion', '_docker'] | path_join }}"
+  changed_when: false
