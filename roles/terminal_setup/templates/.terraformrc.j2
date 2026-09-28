@@ -1,31 +1,47 @@
 provider_installation {
   # Локальное зеркало для провайдера todoroff/multipass
+  # include перечисляет провайдера под обоими адресами реестра:
+  # registry.opentofu.org — для конфигов tofu,
+  # registry.terraform.io — для конфигов со стандартными адресами.
   filesystem_mirror {
-    path    = "{{ ansible_user_dir}}/.terraform.d/plugins"
-    include = ["registry.opentofu.org/todoroff/multipass"]
+    path = "{{ ansible_user_dir }}/.terraform.d/plugins"
+    include = [
+      "registry.opentofu.org/todoroff/multipass",
+      "registry.terraform.io/todoroff/multipass",
+    ]
   }
 
   # Локальное зеркало для провайдера opentofu/vault
   filesystem_mirror {
-    path    = "{{ ansible_user_dir}}/.terraform.d/plugins"
-    include = ["registry.opentofu.org/opentofu/vault"]
+    path = "{{ ansible_user_dir }}/.terraform.d/plugins"
+    include = [
+      "registry.opentofu.org/opentofu/vault",
+      "registry.terraform.io/opentofu/vault",
+    ]
   }
 
   # Локальное зеркало для провайдера gitlabhq/gitlab
-    filesystem_mirror {
-    path    = "{{ ansible_user_dir}}/.terraform.d/plugins"
-    include = ["registry.opentofu.org/gitlabhq/gitlab"]
+  filesystem_mirror {
+    path = "{{ ansible_user_dir }}/.terraform.d/plugins"
+    include = [
+      "registry.opentofu.org/gitlabhq/gitlab",
+      "registry.terraform.io/gitlabhq/gitlab",
+    ]
   }
 
-  # Локальное зеркало для провайдера opentofu/null
+  # Локальное зеркало для провайдера null (opentofu/null и hashicorp/null)
   filesystem_mirror {
-    path    = "{{ ansible_user_dir}}/.terraform.d/plugins"
-    include = ["registry.opentofu.org/opentofu/null"]
+    path = "{{ ansible_user_dir }}/.terraform.d/plugins"
+    include = [
+      "registry.opentofu.org/opentofu/null",
+      "registry.terraform.io/opentofu/null",
+      "registry.terraform.io/hashicorp/null",
+    ]
   }
 
   # Yandex Cloud зеркало для всех остальных провайдеров
   network_mirror {
-    url     = "{{ terminal_setup_terraform_mirror_url}}"
+    url = "{{ terminal_setup_terraform_mirror_url }}"
     include = ["registry.terraform.io/*/*"]
   }
 }
