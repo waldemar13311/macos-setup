@@ -11,7 +11,19 @@ uv sync
 source .venv/bin/activate
 ```
 
-Перед запуском укажите свой хост в `inventory.yml` (по умолчанию там macOS по SSH).
+Перед запуском, если не будете использовать localhost, укажите удалённый хост в `inventory.yml`.
+
+### Выбор цели запуска
+
+Оба плейбука объявлены с `hosts: all` — конкретную цель выбираем флагом `--limit`, а не правкой плейбука:
+
+```bash
+# локально на этой машине
+ansible-playbook playbooks/terminal_setup.ansible.yml --limit localhost
+
+# на удалённом macos-хосте из inventory.yml
+ansible-playbook playbooks/terminal_setup.ansible.yml --limit macos
+```
 
 ### Установка ansible зависимостей
 
@@ -23,10 +35,10 @@ ansible-galaxy install -r .ansible/requirements.yml
 
 ```bash
 # терминал: zsh, плагины, тема, утилиты, vim, docker completion
-ansible-playbook playbooks/terminal_setup.ansible.yml
+ansible-playbook playbooks/terminal_setup.ansible.yml --limit localhost
 
 # десктоп: Chrome, VS Code и т. д. (Homebrew Cask)
-ansible-playbook playbooks/desktop_apps_setup.ansible.yml
+ansible-playbook playbooks/desktop_apps_setup.ansible.yml --limit localhost
 ```
 
 Списки плагинов и пакетов можно менять в `roles/terminal_setup/defaults/main.yml`.

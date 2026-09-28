@@ -1,6 +1,6 @@
 ---
 - name: Base terminal setup
-  hosts: macos # или localhost
+  hosts: all # цель выбирается при запуске: --limit localhost или --limit macos
   become: false
   gather_facts: true
 
