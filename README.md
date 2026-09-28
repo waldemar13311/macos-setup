@@ -2,6 +2,9 @@
 
 Личные Ansible-плейбуки для настройки macOS: Zsh с [Antidote](https://github.com/mattmc3/antidote), плагинами Oh My Zsh, тема, алиасы, утилиты из Homebrew, `~/.vimrc`. Всё собирается ролью `terminal_setup`; отдельно есть playbook для десктопных приложений.
 
+> [!WARNING]
+> Роль перезаписывает существующие dotfiles: заменяет `~/.zshenv`, `~/.config/zsh/*`, `~/.config/vim/.vimrc`, `~/.terraformrc`, удаляет `~/.vimrc` и git-completion из Homebrew, переносит `~/.zsh_history` в XDG-каталог. Если у вас свои конфиги - сделайте бэкап перед запуском.
+
 ### Подготовка
 
 ```bash
