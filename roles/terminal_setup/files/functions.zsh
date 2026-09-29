@@ -563,3 +563,30 @@ fzf-find-delete-history() {
 
 zle -N fzf-find-delete-history
 # endregion
+
+# region === sudo wrapper ===
+# sudo - Обёртка над sudo: при запуске vim под root пробрасывает VIMINIT,
+# иначе vim от root остаётся вообще без конфига (sudo очищает окружение,
+# VIMINIT из .zshenv не наследуется) - нет ни темы, ни подсветки.
+# Все остальные команды идут через обычный sudo без изменений.
+# С флагами (sudo -H vim ...) тоже работает: vim ищется среди аргументов
+sudo() {
+  local -a args=()
+  local arg found_vim=0
+
+  for arg in "$@"; do
+    if [[ "$arg" == vim ]]; then
+      found_vim=1
+      args+=(VIMINIT="source $HOME/.config/vim/.vimrc" vim)
+    else
+      args+=("$arg")
+    fi
+  done
+
+  if (( found_vim )); then
+    command sudo "${args[@]}"
+  else
+    command sudo "$@"
+  fi
+}
+# endregion
