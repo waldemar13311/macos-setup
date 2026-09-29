@@ -400,3 +400,74 @@ https-proxy-vars-example () {
   echo 'export https_proxy="https://myuser:mypassword123@proxy.home:3129" # для https сайтов'
 }
 # endregion
+
+# Сообщение пользователю: из zle-виджета через zle -M, иначе print (для тестов)
+_history-widget-msg() {
+  if (( $+ZLE_VERSION )); then
+    zle -M "$1"
+  else
+    print -r -- "$1" >&2
+  fi
+}
+
+# region === fzf-find-delete-history ===
+# fzf-find-delete-history - Поиск по истории через fzf (замена fzf-insert-history по Ctrl+R)
+# с возможностью удалить выбранную команду из истории:
+#   Enter     - вставить команду в строку ввода (как обычно)
+#   fn+Delete - удалить команду из истории (файл) прямо внутри открытой fzf-сессии:
+#               fzf сам перезагружает список (reload), без переоткрытия и мерцания
+#
+# fn+Delete на Mac-клавиатуре = forward-delete (\e[3~), терминалы передают его
+# приложению без настройки.
+#
+# Механика: fzf --bind="delete:reload(...)" по нажатию delete запускает скрипт
+# history_delete_event.zsh (удаляет событие из HISTFILE и печатает обновлённый
+# список) и мгновенно подменяет данные, не закрываясь. После выхода из fzf
+# память сессии перечитывается из файла через fc -p.
+# ВАЖНО: --expect=delete использовать нельзя — он несовместим с --bind на той же
+# клавише и перехватывает нажатие, из-за чего reload не срабатывает.
+fzf-find-delete-history() {
+  emulate -L zsh
+
+  if [[ -z "$HISTFILE" || ! -f "$HISTFILE" ]]; then
+    _history-widget-msg "HISTFILE не найден - удаление из истории недоступно"
+    return 1
+  fi
+
+  local query="$LBUFFER"
+  local fzf_out cmd
+
+  fzf_out="$(
+    fc -l 1 2>/dev/null | fzf --tac --tiebreak=index \
+      --exact \
+      --query="$query" +m \
+      --bind="delete:reload(zsh ${(q)${ZDOTDIR:-$HOME/.config/zsh}}/history_delete_event.zsh {1} {})" \
+      --header="Enter - вставить | fn+Del - удалить из истории"
+  )"
+
+  # fzf завершился: синхронизируем память сессии с файлом (внутри fzf могли быть
+  # удаления). ВАЖНО сделать при ЛЮБОМ выходе (Enter/Esc) — иначе при закрытии
+  # шелла INC_APPEND_HISTORY_TIME перезапишет файл устаревшей памятью и удаления
+  # потеряются
+  builtin fc -p "$HISTFILE" "$HISTSIZE" "$SAVEHIST"
+
+  # fzf_out пуст (Esc) - выходим без изменений
+  [[ -z "$fzf_out" ]] && {
+    BUFFER="$query"
+    CURSOR=$#BUFFER
+    zle redisplay
+    return 0
+  }
+
+  # Enter: fzf_out = выбранная строка "  42  cmd..."
+  # Вырезаем номер события и * (маркер измененной записи): "  42  cmd..." -> "cmd..."
+  cmd="$(print -r -- "$fzf_out" | sed -E 's/^ *[0-9]+\*?  ?//')"
+
+  # Обычная вставка выбранной команды
+  BUFFER="$cmd"
+  CURSOR=$#BUFFER
+  zle redisplay
+}
+
+zle -N fzf-find-delete-history
+# endregion

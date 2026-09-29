@@ -56,6 +56,7 @@ terminal_setup_zsh_config_files:
   - "hotkeys.zsh"
   - "alias.zsh"
   - "functions.zsh"
+  - "history_delete_event.zsh"
   - "zsh-my-gnzh-theme.zsh-theme"
 
 terminal_setup_terraform_mirror_url: "https://terraform-mirror.yandexcloud.net/"
