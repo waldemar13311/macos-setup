@@ -1,0 +1,12 @@
+---
+# Базовые коллекции для старта
+collections:
+  - name: community.general   # общие модули: homebrew, ключи, archive и т.д.
+    version: ">=10.0.0"
+  - name: ansible.posix       # authorized_key, mount, synchronize
+    version: ">=1.5.0"
+
+# Публичные роли с Ansible Galaxy - по мере необходимости:
+# roles:
+#   - name: gantsign.terminal  # https://galaxy.ansible.com/gantsign/terminal
+#     version: "1.3.0"

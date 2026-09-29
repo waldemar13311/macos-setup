@@ -1,0 +1,14 @@
+---
+- name: Ping playbook
+  hosts: all
+  become: false
+  gather_facts: true
+
+  # Подключите созданные роли, например:
+  # roles:
+  #   - base
+
+  tasks:
+    - name: Ping all hosts
+      become: false
+      ansible.builtin.ping:

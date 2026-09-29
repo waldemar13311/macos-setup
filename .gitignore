@@ -3,3 +3,6 @@
 !.ansible/requirements.yml
 
 uv.lock
+
+# Claude Code (журнал сессий, локальные настройки)
+.claude/

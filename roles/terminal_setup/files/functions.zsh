@@ -401,6 +401,98 @@ https-proxy-vars-example () {
 }
 # endregion
 
+# region === ansible-project-init ===
+# ansible-project-init - Создает в новой папке скелет простого ansible-проекта
+# на основе шаблона из ~/.config/zsh/templates-for-functions/ansible-project-init
+# (структура повторяет этот репозиторий: macos-setup).
+# Сам шаблон лежит в macos-setup: roles/terminal_setup/files/templates-for-functions/ansible-project-init
+# и раскладывается ролью terminal_setup - правим структуру там.
+# Имя проекта подставляется в pyproject.toml (name, description) и README.md.
+# Использование:
+#   ansible-project-init имя_проекта - создать папку имя_проекта и развернуть шаблон в ней
+#                                      (имя можно с путём: ~/play/my-project)
+#   ansible-project-init .           - развернуть шаблон в текущей папке,
+#                                      имя проекта берется из имени папки
+ansible-project-init() {
+  emulate -L zsh
+
+  if [[ -z "$1" ]]; then
+    echo "Использование: ansible-project-init имя_проекта | ansible-project-init ."
+    return 1
+  fi
+
+  local target project_name
+
+  # "." - инициализация в текущей папке: имя проекта = имя текущего каталога
+  if [[ "$1" == "." ]]; then
+    target="$PWD"
+    [[ "$target" == "/" ]] && {
+      echo "ansible-project-init: инициализация в корне '/' - так нельзя" >&2
+      return 1
+    }
+    project_name="${target:t}"
+
+    # Разворачиваем только в пустую папку - чтобы случайно не засорить чужой проект
+    if [[ -n "$(command ls -A "$target")" ]]; then
+      echo "ansible-project-init: '$target' не пуста" >&2
+      return 1
+    fi
+  else
+    target="${1:a}"          # нормализуем путь (схлопывает '.', '..')
+    project_name="${target:t}"
+
+    # Не трогаем существующую папку
+    if [[ -e "$target" ]]; then
+      echo "ansible-project-init: '$target' уже существует" >&2
+      return 1
+    fi
+    mkdir -p "${target:h}" || {
+      echo "ansible-project-init: не удалось создать каталог '${target:h}'" >&2
+      return 1
+    }
+  fi
+
+  # Имя проекта попадает в pyproject.toml ([project] name) - поэтому оно должно
+  # быть валидным python-именем: строчные латинские буквы, цифры, дефис,
+  # начинаться с буквы (uv sync упадет уже после генерации, если имя невалидное)
+  if [[ ! "$project_name" =~ ^[a-z][a-z0-9-]*$ ]]; then
+    echo "ansible-project-init: некорректное имя проекта: '$project_name'" >&2
+    echo "Допустимы: строчные латинские буквы, цифры и дефис, начинаются с буквы" >&2
+    return 1
+  fi
+
+  local -r template_dir="${ZDOTDIR:-$HOME/.config/zsh}/templates-for-functions/ansible-project-init"
+
+  if [[ ! -d "$template_dir" ]]; then
+    echo "ansible-project-init: шаблон не найден: $template_dir" >&2
+    echo "Запустите плейбук playbooks/terminal_setup.ansible.yml, чтобы его развернуть" >&2
+    return 1
+  fi
+
+  # Копируем шаблон (для "." - содержимое шаблона в текущую папку).
+  # Служебные папки (.claude, .venv и др.) в шаблон не входят намеренно -
+  # но на случай, если завелись, исключаем их из копирования
+  cp -R "$template_dir"/ "$target"/ || {
+    echo "ansible-project-init: не удалось скопировать шаблон в '$target'" >&2
+    return 1
+  }
+  /bin/rm -rf "$target"/.claude "$target"/.venv
+
+  # Подставляем имя проекта вместо плейсхолдера во всех файлах.
+  # perl (а не sed) - чтобы работало одинаково на macOS (BSD sed) и Linux (GNU sed):
+  # у них несовместимый синтаксис -i. Имя передаем через env - безопаснее интерполяции в код
+  PNAME="$project_name" command find "$target" -type f \
+    -exec perl -pi -e 's/__PROJECT_NAME__/$ENV{PNAME}/g' {} +
+
+  echo "✅ Ansible проект '$project_name' успешно создан: $target\n"
+
+  echo "Итоговая структура в виде дерева:"
+  tree "$target"
+}
+
+compdef _arguments ansible-project-init '1:имя проекта: '
+# endregion
+
 # Сообщение пользователю: из zle-виджета через zle -M, иначе print (для тестов)
 _history-widget-msg() {
   if (( $+ZLE_VERSION )); then
@@ -424,7 +516,7 @@ _history-widget-msg() {
 # history_delete_event.zsh (удаляет событие из HISTFILE и печатает обновлённый
 # список) и мгновенно подменяет данные, не закрываясь. После выхода из fzf
 # память сессии перечитывается из файла через fc -p.
-# ВАЖНО: --expect=delete использовать нельзя — он несовместим с --bind на той же
+# ВАЖНО: --expect=delete использовать нельзя - он несовместим с --bind на той же
 # клавише и перехватывает нажатие, из-за чего reload не срабатывает.
 fzf-find-delete-history() {
   emulate -L zsh
@@ -446,7 +538,7 @@ fzf-find-delete-history() {
   )"
 
   # fzf завершился: синхронизируем память сессии с файлом (внутри fzf могли быть
-  # удаления). ВАЖНО сделать при ЛЮБОМ выходе (Enter/Esc) — иначе при закрытии
+  # удаления). ВАЖНО сделать при ЛЮБОМ выходе (Enter/Esc) - иначе при закрытии
   # шелла INC_APPEND_HISTORY_TIME перезапишет файл устаревшей памятью и удаления
   # потеряются
   builtin fc -p "$HISTFILE" "$HISTSIZE" "$SAVEHIST"

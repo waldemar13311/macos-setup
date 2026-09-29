@@ -1,0 +1,20 @@
+# Ansible (содержимое .ansible генерится ansible-galaxy, храним только requirements)
+.ansible/*
+!.ansible/requirements.yml
+ansible.log
+
+# Python / виртуальное окружение
+.venv/
+__pycache__/
+*.py[cod]
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Claude Code (журнал сессий, локальные настройки)
+.claude/
+
+# Секреты
+.env

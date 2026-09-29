@@ -78,6 +78,49 @@
   loop: "{{ terminal_setup_zsh_config_files }}"
   notify: Initialize Antidote plugins
 
+- name: Copy function templates to ~/.config/zsh/templates-for-functions
+  ansible.builtin.copy:
+    src: templates-for-functions/
+    dest: "{{ [terminal_setup_config_dir, 'templates-for-functions'] | path_join }}"
+    mode: "0644"
+    directory_mode: "0755"
+    owner: "{{ ansible_user_id }}"
+
+# copy не удаляет файлы, исчезнувшие из источника - чистим их вручную, иначе
+# в новые проекты через ansible-project-init попадет устаревшая структура
+- name: List template files in the role source (controller-side)
+  ansible.builtin.find:
+    paths: "{{ role_path }}/files/templates-for-functions"
+    recurse: true
+    file_type: file
+  delegate_to: localhost
+  become: false
+  register: source_template_files
+
+- name: Compute source template paths relative to the template root
+  ansible.builtin.set_fact:
+    source_template_rel: >-
+      {{ source_template_files.files
+         | map(attribute='path')
+         | map('replace', role_path + '/files/templates-for-functions/', '')
+         | list }}
+
+- name: Find files in deployed templates missing from the role source
+  ansible.builtin.find:
+    paths: "{{ [terminal_setup_config_dir, 'templates-for-functions'] | path_join }}"
+    recurse: true
+    file_type: file
+  register: deployed_template_files
+
+- name: Remove stale files from deployed templates
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ deployed_template_files.files }}"
+  when: >-
+    (item.path | replace(terminal_setup_config_dir + '/templates-for-functions/', ''))
+    not in source_template_rel
+
 - name: Move old .zsh_history file to XDG directory
   ansible.builtin.command: mv "{{ [ansible_user_dir, '.zsh_history'] | path_join }}" "{{ [terminal_setup_state_dir, 'history'] | path_join }}"
   args:

@@ -1,0 +1,10 @@
+all:
+  hosts:
+    # Удалённый хост - раскомментируйте и подставьте свои значения:
+    # test-group:
+    #   ansible_host: 192.168.1.10
+    #   ansible_user: user
+    # localhost - при необходимости раскомментируйте
+    # localhost:
+    #   ansible_connection: local
+    #   ansible_python_interpreter: "{{ ansible_playbook_python }}"
