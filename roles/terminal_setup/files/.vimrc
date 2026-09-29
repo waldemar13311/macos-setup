@@ -1,8 +1,14 @@
-" Цвета в 24-bit (true color): терминал поддерживает (COLORTERM=truecolor).
+" Цвета в 24-bit (true color). COLORTERM=truecolor выставляют сами терминалы
+" с поддержкой 24-bit (iTerm2 >=3.4, VS Code). Terminal.app 24-bit не рисует и
+" COLORTERM не задаёт: там guifg-цвета выродились бы в грязную 256-палитру
+" (проверено printf-тестом), поэтому гейтимся на COLORTERM - без него vim
+" работает через cterm-цвета темы (приближённо, но читаемо).
 " ВАЖНО: termguicolors должен быть установлен ДО syntax on и colorscheme -
 " если включить подсветку раньше, первый символ экрана отрисовывается со старыми
 " атрибутами и не перекрашивается до полного redraw (лечилось toggling'ом set nu)
-set termguicolors
+if $COLORTERM ==# 'truecolor' || $COLORTERM ==# '24bit'
+  set termguicolors
+endif
 
 " XDG-каталог конфигурации в runtimepath: vim сам ищет в нём только vimrc,
 " а ftdetect/, syntax/ и colors/ читает из ~/.vim. Без этой строки наши
