@@ -1,0 +1,8 @@
+---
+# Параметры установки antidote на Debian/Ubuntu: в apt пакета нет, поэтому
+# роль ставит его git-клоном в ~/.local/share (стандартный каталог данных XDG).
+# На macOS antidote ставится из Homebrew - эти переменные там не используются.
+terminal_setup_antidote_repo_url: "https://github.com/mattmc3/antidote.git"
+# Пин на релиз antidote (при желании можно поднять вручную)
+terminal_setup_antidote_repo_version: "v2.3.0"
+terminal_setup_antidote_dest: "{{ [ansible_user_dir, '.local/share/antidote'] | path_join }}"

@@ -1,0 +1,40 @@
+---
+# gitlab-ci-local: ставим standalone-бинарник из релиза GitHub в ~/.local/bin
+# (без прав root). Ссылки и пиновая версия - в vars/Debian/gitlab_ci_local_vars.yml.
+# Каталоги загрузки/распаковки содержат версию: при поднятии пина бинарник обновится.
+- name: Remove obsolete gitlab-ci-local apt repository (Debian)
+  # Раньше ставился через apt-репозиторий проекта (Deb822 sources) -
+  # заменён на бинарник из релиза, sources-файл больше не нужен
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/gitlab-ci-local.sources
+    state: absent
+  become: true
+
+- name: Download gitlab-ci-local (Debian)
+  ansible.builtin.get_url:
+    url: >-
+      {{ terminal_setup_gitlab_ci_local_url_base }}/{{
+      terminal_setup_gitlab_ci_local_version }}/gitlab-ci-local-linux-{{ terminal_setup_linux_arch }}.tar.gz
+    dest: "/tmp/gitlab-ci-local-{{ terminal_setup_gitlab_ci_local_version }}.tar.gz"
+    mode: '0644'
+
+- name: Ensure extraction directory exists (Debian)
+  # unarchive требует существующий dest (в отличие от dpkg-deb -x)
+  ansible.builtin.file:
+    path: "/tmp/gitlab-ci-local-{{ terminal_setup_gitlab_ci_local_version }}-extracted"
+    state: directory
+    mode: '0755'
+
+- name: Extract gitlab-ci-local (Debian)
+  ansible.builtin.unarchive:
+    src: "/tmp/gitlab-ci-local-{{ terminal_setup_gitlab_ci_local_version }}.tar.gz"
+    dest: "/tmp/gitlab-ci-local-{{ terminal_setup_gitlab_ci_local_version }}-extracted"
+    remote_src: true
+    creates: "/tmp/gitlab-ci-local-{{ terminal_setup_gitlab_ci_local_version }}-extracted/gitlab-ci-local"
+
+- name: Install gitlab-ci-local binary to ~/.local/bin (Debian)
+  ansible.builtin.copy:
+    src: "/tmp/gitlab-ci-local-{{ terminal_setup_gitlab_ci_local_version }}-extracted/gitlab-ci-local"
+    dest: "{{ [ansible_user_dir, '.local/bin/gitlab-ci-local'] | path_join }}"
+    mode: '0755'
+    remote_src: true

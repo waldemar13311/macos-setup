@@ -1,0 +1,8 @@
+---
+# tenv: в apt отсутствует. В актуальных релизах нет tar.gz - только пакеты
+# (.deb/.rpm/.apk), поэтому ставим .deb из релиза GitHub без установки
+# (dpkg-deb -x не требует прав root), а все бинарники (tenv, terraform, tofu,
+# terragrunt, terramate, tf, atmos) копируем в ~/.local/bin.
+# Версия пинится и обновляется вручную.
+terminal_setup_tenv_version: "v4.15.1"
+terminal_setup_tenv_url_base: "https://github.com/tofuutils/tenv/releases/download"

@@ -1,0 +1,11 @@
+---
+# fastfetch: в Ubuntu 24.04 отсутствует, ставим .deb из релиза GitHub (fastfetch-cli/fastfetch)
+# без установки пакета: dpkg-deb -x без прав root, бинарник копируется в ~/.local/bin.
+# Версия пинится и обновляется вручную (в тегах нет префикса "v").
+# Нюанс: в именах ассетов fastfetch ARM-архитектура называется "aarch64",
+# а не "arm64" (как у k8s/tenv), поэтому тут свой маппинг архитектуры.
+terminal_setup_fastfetch_version: "2.69.0"
+terminal_setup_fastfetch_arch: "{{ 'amd64' if ansible_architecture == 'x86_64' else 'aarch64' }}"
+terminal_setup_fastfetch_deb_url: >-
+  https://github.com/fastfetch-cli/fastfetch/releases/download/{{
+  terminal_setup_fastfetch_version }}/fastfetch-linux-{{ terminal_setup_fastfetch_arch }}.deb

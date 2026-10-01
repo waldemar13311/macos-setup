@@ -148,9 +148,19 @@ iconclean() {
 # endregion
 
 # region === my_pbcopy ===
-# Функция-обертка для копирования (на неё есть алиас)
+# Функция-обертка для копирования (на неё есть алиас).
+# macOS - pbcopy; Linux - wl-copy (Wayland) или xclip (X11)
 my_pbcopy() {
-    pbcopy
+    if (( $+commands[pbcopy] )); then
+        pbcopy
+    elif (( $+commands[wl-copy] )); then
+        wl-copy
+    elif (( $+commands[xclip] )); then
+        xclip -in -selection clipboard
+    else
+        echo "❌ Не найдена утилита буфера обмена (pbcopy/wl-copy/xclip)" >&2
+        return 1
+    fi
 
     echo "✅ Скопировано в буфер обмена"
 }
@@ -372,7 +382,7 @@ tryssh () {
       break
     fi
 
-    echo "Ошибка подключения. Повтор через 3 секунды..."
+    echo "Ошибка подключения. Повтор через 3 секунды...\n"
     sleep 3
   done
 }

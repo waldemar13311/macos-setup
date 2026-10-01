@@ -1,0 +1,47 @@
+---
+# Общие переменные Debian/Ubuntu (apt): списки пакетов и платформенные пути.
+# Списки рассчитаны на Ubuntu 24.04 (noble) и новее.
+#
+# Инструменты, которых нет в apt, разложены по файлам рядом:
+#   kubectl_vars.yml, uv_vars.yml, tenv_vars.yml,
+#   fastfetch_vars.yml, gitlab_ci_local_vars.yml
+
+# Соответствие ansible_architecture -> суффикс релизов Linux
+# (используется в *_vars.yml для скачивания бинарников)
+terminal_setup_arch_map:
+  x86_64: "amd64"
+  aarch64: "arm64"
+
+# Путь к antidote.zsh - используется в .zshrc и хендлере инициализации плагинов
+terminal_setup_antidote_init: "$HOME/.local/share/antidote/antidote.zsh"
+
+# Каталоги cli-плагинов docker (buildx, compose) для ~/.docker/config.json
+terminal_setup_docker_cli_plugins_dirs:
+  - "/usr/libexec/docker/cli-plugins"
+  - "/usr/local/lib/docker/cli-plugins"
+
+terminal_setup_modern_console_utils:
+  - "bat"           # Замена cat (бинарник называется batcat - симлинк создаётся ролью)
+  - "eza"           # Замена ls
+  - "zoxide"        # Продвинутый cd
+  - "fd-find"       # Замена find (бинарник называется fdfind - симлинк создаётся ролью)
+  - "fzf"           # Полезные виджеты
+  - "trash-cli"     # Замена rm (freedesktop-корзина)
+  - "wl-clipboard"  # wl-copy/wl-paste - буфер обмена под Wayland
+  - "xclip"         # Буфер обмена под X11
+
+terminal_setup_console_utils:
+  - "zsh"                 # На macOS zsh предустановлен, на Ubuntu - нет
+  - "golang-go"           # Язык go
+  - "kubectx"             # Менеджер контекстов k8s + менеджер namespaces-ов k8s
+  - "jq"                  # JSON-парсер
+  - "wget"                # Загрузчик файлов
+  - "ncdu"                # Анализатор занятого дискового пространства
+  - "tldr"                # Упрощенные и лаконичные man-страницы
+  - "docker.io"           # Docker-движок и консольный клиент
+  - "docker-compose-v2"   # v2 версия docker compose плагина
+  - "docker-buildx"       # buildx плагин для docker
+  - "vim"                 # Текстовый редактор
+  - "htop"                # Консольный диспетчер задач
+  - "curl"                # Загрузчик файлов
+  - "openssl"             # Пакет для работы с сертификатами

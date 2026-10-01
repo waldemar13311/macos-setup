@@ -1,4 +1,11 @@
+# macOS: приложения через Homebrew Cask
 desktop_casks:
   - google-chrome
-  - visual-studio-code
+  - visual-studio-codeПу
   - font-jetbrains-mono-nerd-font
+
+# Debian/Ubuntu: приложения через apt (.deb) и apt-пакеты
+desktop_debian_font_package: "fonts-jetbrains-mono"
+desktop_debian_chrome_deb_url: "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
+desktop_debian_code_deb_url: "https://update.code.visualstudio.com/latest/linux-deb-x64/stable"
+desktop_debian_download_dir: "/tmp/desktop-apps-debs"

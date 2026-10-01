@@ -29,7 +29,7 @@
           if (terminal_setup_docker_config_stat.stat.exists and terminal_setup_docker_config_stat.stat.size > 0)
           else {}
         )
-        | combine({'cliPluginsExtraDirs': ['/opt/homebrew/lib/docker/cli-plugins', '/usr/local/lib/docker/cli-plugins']})
+        | combine({'cliPluginsExtraDirs': terminal_setup_docker_cli_plugins_dirs})
         | to_nice_json(indent=2)
       }}
 
@@ -40,5 +40,7 @@
   ansible.builtin.shell: |
     docker completion zsh > "{{ [terminal_setup_config_dir, 'completion', '_docker'] | path_join }}"
   environment:
+    # Префикс Homebrew нужен на macOS; на Linux это несуществующие каталоги -
+    # они просто игнорируются в PATH, docker найдется в стандартных путях
     PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
   changed_when: false

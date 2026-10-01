@@ -1,0 +1,21 @@
+---
+# kubectl: в apt отсутствует в любой версии Ubuntu, ставим бинарником в ~/.local/bin.
+# Ссылки - в vars/Debian/kubectl_vars.yml
+- name: Resolve the latest stable kubectl version (Debian)
+  ansible.builtin.uri:
+    url: "{{ terminal_setup_kubectl_version_url }}"
+    return_content: true
+  register: terminal_setup_kubectl_version_resp
+
+- name: Extract the kubectl version (Debian)
+  ansible.builtin.set_fact:
+    terminal_setup_kubectl_version: "{{ terminal_setup_kubectl_version_resp.content | trim }}"
+
+- name: Install kubectl to ~/.local/bin (Debian)
+  # checksum заставляет get_url сверять хеш бинарника с dl.k8s.io при каждом
+  # прогоне: вышел новый стабильный релиз - бинарник перекачается
+  ansible.builtin.get_url:
+    url: "{{ terminal_setup_kubectl_bin_url }}"
+    dest: "{{ [ansible_user_dir, '.local/bin/kubectl'] | path_join }}"
+    checksum: "sha256:{{ terminal_setup_kubectl_bin_url }}.sha256"
+    mode: '0755'

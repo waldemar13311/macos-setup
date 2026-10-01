@@ -1,0 +1,40 @@
+---
+# Переменные для macOS (Homebrew).
+# Подключаются в tasks/main.yml по ansible_os_family == 'Darwin'.
+
+# Путь к antidote.zsh - используется в .zshrc и хендлере инициализации плагинов
+terminal_setup_antidote_init: "$(brew --prefix)/opt/antidote/share/antidote/antidote.zsh"
+
+# Каталоги cli-плагинов docker (buildx, compose) для ~/.docker/config.json
+terminal_setup_docker_cli_plugins_dirs:
+  - "/opt/homebrew/lib/docker/cli-plugins"
+  - "/usr/local/lib/docker/cli-plugins"
+
+terminal_setup_modern_console_utils:
+  - "bat"         # Замена cat
+  - "eza"         # Замена ls
+  - "zoxide"      # Продвинутый cd
+  - "fd"          # Замена find
+  - "fzf"         # Полезные виджеты
+  - "trash-cli"   # Замена rm (для удаления файлов в корзину)
+
+terminal_setup_console_utils:
+  - "golang"          # Язык go
+  - "kubectl"         # * K8s клиент
+  - "kubectx"         # Менеджер контекстов k8s + менеджер namespaces-ов k8s
+  - "jq"              # JSON-парсер
+  - "wget"            # Загрузчик файлов
+  - "ncdu"            # Анализатор занятого дискового пространства
+  - "tldr"            # Упрощенные и лаконичные man-страницы
+  - "uv"              # * Современный менеджер пакетов для python
+  - "tenv"            # * Универсальный установщик OpenTofu, Terraform, Terragrunt и Atmos
+  - "docker"          # Консольный Docker CLI клиент (команды docker ps, run, build)
+  - "docker-compose"  # v2 версия docker compose плагина
+  - "docker-buildx"   # buildx плагин для docker
+  - "colima"          # Легковесный движок-контейнеризатор (замена Docker Desktop)
+  - "vim"             # Текстовый редактор
+  - "htop"            # Консольный диспетчер задач
+  - "fastfetch"       # * Вывод базовой информации о системе
+  - "gitlab-ci-local" # Для локального запуска gitlab pipeline
+  - "curl"            # Не apple-овский curl
+  - "openssl@3"       # Пакет для работы с сертификатами

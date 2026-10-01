@@ -10,9 +10,16 @@ galaxy_info:
 
   platforms:
     - name: MacOSX
+    - name: Ubuntu
+      versions:
+        - noble
+    - name: Debian
+      versions:
+        - bookworm
 
   galaxy_tags:
     - macos
+    - linux
     - zsh
     - antidote
     - dotfiles

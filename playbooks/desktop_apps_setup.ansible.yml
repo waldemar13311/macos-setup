@@ -10,3 +10,36 @@
         state: present
         # Не падать, если cask уже установлен вне Homebrew (поставлен вручную)
         accept_external_apps: true
+      when: ansible_os_family == 'Darwin'
+
+    - name: Install desktop apps (Debian)
+      # Chrome и VS Code ставим из официальных .deb: их установка подключает
+      # собственные apt-репозитории, так что обновления приедут через apt upgrade
+      when: ansible_os_family == 'Debian'
+      block:
+        - name: Ensure download directory exists (Debian)
+          ansible.builtin.file:
+            path: "{{ desktop_debian_download_dir }}"
+            state: directory
+            mode: '0755'
+
+        - name: Download Google Chrome .deb (Debian)
+          ansible.builtin.get_url:
+            url: "{{ desktop_debian_chrome_deb_url }}"
+            dest: "{{ [desktop_debian_download_dir, 'google-chrome-stable.deb'] | path_join }}"
+            mode: '0644'
+
+        - name: Download VS Code .deb (Debian)
+          ansible.builtin.get_url:
+            url: "{{ desktop_debian_code_deb_url }}"
+            dest: "{{ [desktop_debian_download_dir, 'vscode.deb'] | path_join }}"
+            mode: '0644'
+
+        - name: Install desktop packages (Debian)
+          ansible.builtin.apt:
+            name:
+              - "{{ desktop_debian_font_package }}" # JetBrains Mono (не Nerd-вариант)
+              - "{{ [desktop_debian_download_dir, 'google-chrome-stable.deb'] | path_join }}"
+              - "{{ [desktop_debian_download_dir, 'vscode.deb'] | path_join }}"
+            state: present
+          become: true
