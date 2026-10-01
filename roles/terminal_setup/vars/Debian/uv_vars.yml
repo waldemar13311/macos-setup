@@ -1,0 +1,5 @@
+---
+# uv: apt-пакет появился только в Ubuntu 25.10+, поэтому ставим официальным
+# инсталлятором astral.sh (скачивает релизные бинарники с GitHub astral-sh/uv)
+# в ~/.local/bin
+terminal_setup_uv_installer_url: "https://astral.sh/uv/install.sh"

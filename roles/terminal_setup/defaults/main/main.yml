@@ -1,0 +1,3 @@
+---
+# Списки пакетов и пути к antidote/docker-плагинам зависят от ОС и лежат
+# в vars/Darwin.yml (Homebrew) и vars/Debian.yml (apt); подключаются в tasks/main.yml.

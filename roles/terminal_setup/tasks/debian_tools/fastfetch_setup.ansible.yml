@@ -1,0 +1,26 @@
+---
+# fastfetch: в Ubuntu 24.04 отсутствует, ставим .deb из релиза GitHub
+# без установки пакета (dpkg-deb -x не требует root).
+# Ссылка на релиз - в vars/Debian/fastfetch_vars.yml.
+# Каталоги загрузки/распаковки содержат версию: при поднятии пина создастся
+# новая распаковка и copy обновит бинарник, старые не помешают.
+- name: Download fastfetch .deb (Debian)
+  ansible.builtin.get_url:
+    url: "{{ terminal_setup_fastfetch_deb_url }}"
+    dest: "/tmp/fastfetch-{{ terminal_setup_fastfetch_version }}.deb"
+    mode: '0644'
+
+- name: Extract fastfetch .deb without install (Debian)
+  ansible.builtin.command:
+    cmd: >-
+      dpkg-deb -x /tmp/fastfetch-{{ terminal_setup_fastfetch_version }}.deb
+      /tmp/fastfetch-{{ terminal_setup_fastfetch_version }}-extracted
+  args:
+    creates: "/tmp/fastfetch-{{ terminal_setup_fastfetch_version }}-extracted/usr/bin/fastfetch"
+
+- name: Install fastfetch binary to ~/.local/bin (Debian)
+  ansible.builtin.copy:
+    src: "/tmp/fastfetch-{{ terminal_setup_fastfetch_version }}-extracted/usr/bin/fastfetch"
+    dest: "{{ [ansible_user_dir, '.local/bin/fastfetch'] | path_join }}"
+    mode: '0755'
+    remote_src: true

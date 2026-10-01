@@ -1,0 +1,12 @@
+---
+# Определяем zsh файлы для копирования в ~/.config/zsh
+terminal_setup_zsh_config_files:
+  - ".zshrc"
+  - "variables.zsh"
+  - "fzf_options.zsh"
+  - "history_options.zsh"
+  - "hotkeys.zsh"
+  - "alias.zsh"
+  - "functions.zsh"
+  - "history_delete_event.zsh"
+  - "zsh-my-gnzh-theme.zsh-theme"

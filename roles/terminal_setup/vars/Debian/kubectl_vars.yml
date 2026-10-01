@@ -1,0 +1,8 @@
+---
+# kubectl: в apt отсутствует в любой версии Ubuntu, ставим бинарником в ~/.local/bin.
+# dl.k8s.io - официальный CDN проекта Kubernetes; stable.txt содержит
+# номер последнего стабильного релиза (например v1.33.3).
+# terminal_setup_linux_arch определяется в main.yml по ansible_architecture.
+terminal_setup_kubectl_version_url: "https://dl.k8s.io/release/stable.txt"
+terminal_setup_kubectl_bin_url: >-
+  https://dl.k8s.io/release/{{ terminal_setup_kubectl_version }}/bin/linux/{{ terminal_setup_linux_arch }}/kubectl

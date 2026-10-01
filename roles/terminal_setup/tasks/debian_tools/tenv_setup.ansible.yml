@@ -1,0 +1,36 @@
+---
+# tenv: ставим .deb из релиза GitHub без установки пакета (dpkg-deb -x не
+# требует root); все бинарники копируются в ~/.local/bin.
+# Ссылки и пиновая версия - в vars/Debian/tenv_vars.yml.
+# Каталоги распаковки содержат версию в имени: при поднятии пина создастся
+# новая распаковка и copy обновит бинарники, старые не помешают.
+- name: Download tenv .deb (Debian)
+  ansible.builtin.get_url:
+    url: >-
+      {{ terminal_setup_tenv_url_base }}/{{ terminal_setup_tenv_version }}/tenv_{{
+      terminal_setup_tenv_version }}_{{ terminal_setup_linux_arch }}.deb
+    dest: "/tmp/tenv-{{ terminal_setup_tenv_version }}.deb"
+    mode: '0644'
+
+- name: Extract tenv .deb without install (Debian)
+  ansible.builtin.command:
+    cmd: >-
+      dpkg-deb -x /tmp/tenv-{{ terminal_setup_tenv_version }}.deb
+      /tmp/tenv-{{ terminal_setup_tenv_version }}-extracted
+  args:
+    creates: "/tmp/tenv-{{ terminal_setup_tenv_version }}-extracted/usr/bin/tenv"
+
+- name: Install tenv binaries to ~/.local/bin (Debian)
+  ansible.builtin.copy:
+    src: "/tmp/tenv-{{ terminal_setup_tenv_version }}-extracted/usr/bin/{{ item }}"
+    dest: "{{ [ansible_user_dir, '.local/bin', item] | path_join }}"
+    mode: '0755'
+    remote_src: true
+  loop:
+    - tenv
+    - terraform
+    - tofu
+    - terragrunt
+    - terramate
+    - tf
+    - atmos

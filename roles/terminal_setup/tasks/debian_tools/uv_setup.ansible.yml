@@ -1,0 +1,16 @@
+---
+# uv: apt-пакет появился только в Ubuntu 25.10+, ставим официальным инсталлятором.
+# Ставится один раз (создаёт ~/.local/bin/uv); обновление - вручную `uv self update`.
+# Ссылка на инсталлятор - в vars/Debian/uv_vars.yml
+- name: Download uv installer (Debian)
+  ansible.builtin.get_url:
+    url: "{{ terminal_setup_uv_installer_url }}"
+    dest: /tmp/uv-install.sh
+    mode: '0644'
+
+- name: Install uv (Debian)
+  # Официальный инсталлятор кладет uv в ~/.local/bin
+  ansible.builtin.command:
+    cmd: sh /tmp/uv-install.sh
+  args:
+    creates: "{{ [ansible_user_dir, '.local/bin/uv'] | path_join }}"

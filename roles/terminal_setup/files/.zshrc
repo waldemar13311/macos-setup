@@ -26,8 +26,12 @@ zstyle ':completion:*' cache-path "$XDG_CACHE_HOME/zsh/.zcompcache"
 autoload -U compinit && compinit -i
 
 # Antidote (Загружаем плагины)
-source $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh
-antidote load
+# macOS: antidote из Homebrew; Linux: локальная установка в ~/.local/share/antidote
+if (( $+commands[brew] )); then
+    source "$(brew --prefix)/opt/antidote/share/antidote/antidote.zsh" && antidote load
+elif [[ -f "$XDG_DATA_HOME/antidote/antidote.zsh" ]]; then
+    source "$XDG_DATA_HOME/antidote/antidote.zsh" && antidote load
+fi
 
 # Инициализируем автодополнения
 # -C: берём готовый дамп .zcompdump, не пересканируем весь fpath повторно

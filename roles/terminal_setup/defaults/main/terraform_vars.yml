@@ -1,0 +1,3 @@
+---
+# Определяем переменные для конфигурации terraform
+terminal_setup_terraform_mirror_url: "https://terraform-mirror.yandexcloud.net/"

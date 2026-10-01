@@ -1,8 +1,9 @@
 ---
 - name: Initialize Antidote plugins
   ansible.builtin.command:
+    # Путь к antidote.zsh - в terminal_setup_antidote_init (vars/Darwin.yml или vars/Debian.yml)
     cmd: >
-      zsh -c "source $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh &&
+      zsh -c "source {{ terminal_setup_antidote_init }} &&
       antidote bundle
       < {{ [terminal_setup_config_dir, '.zsh_plugins.txt'] | path_join }}
       > {{ [terminal_setup_config_dir, '.zsh_plugins.zsh'] | path_join }}"

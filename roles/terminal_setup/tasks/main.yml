@@ -1,4 +1,16 @@
 ---
+- name: Check the OS is supported (Darwin or Debian family)
+  ansible.builtin.assert:
+    that: ansible_os_family in ['Darwin', 'Debian']
+    fail_msg: >-
+      Роль поддерживает macOS (Darwin) и Debian/Ubuntu (Debian),
+      а запущена на {{ ansible_distribution }} ({{ ansible_os_family }})
+
+- name: Load OS-specific variables (package lists, antidote/docker paths)
+  # Загружаются все файлы каталога: vars/Darwin/main.yml или vars/Debian/*.yml
+  ansible.builtin.include_vars:
+    dir: "{{ ansible_os_family }}/"
+
 - name: Silence login messages (hushlogin)
   ansible.builtin.file:
     path: "{{ [ansible_user_dir, '.hushlogin'] | path_join }}"
@@ -24,25 +36,99 @@
     patterns: ".zcompdump*"
     recurse: true
     file_type: file
-  register: found_zcompdump_files
+  register: terminal_setup_found_zcompdump_files
 
 - name: Remove found zcompdump files
   ansible.builtin.file:
     path: "{{ item.path }}"
     state: absent
-  loop: "{{ found_zcompdump_files.files }}"
+  loop: "{{ terminal_setup_found_zcompdump_files.files }}"
 
-- name: Install antidote (macOS)
+- name: Install git (Debian)
+  # Идёт до antidote: на минимальной Ubuntu git отсутствует, а нужен и для
+  # клонирования antidote, и для загрузки им плагинов.
+  # (на macOS git приходит с Command Line Tools)
+  become: "{{ ansible_os_family == 'Debian' }}"
+  ansible.builtin.package:
+    name: git
+    state: present
+  when: ansible_os_family == 'Debian'
+
+- name: Install antidote (macOS, via Homebrew)
   ansible.builtin.package:
     name: antidote
     use: homebrew
     state: present
+  when: ansible_os_family == 'Darwin'
 
-- name: Install console utilities (macOS)
+- name: Install antidote (Debian, via git into ~/.local/share)
+  # Параметры установки - в defaults/main/antidote_vars.yml
+  ansible.builtin.git:
+    repo: "{{ terminal_setup_antidote_repo_url }}"
+    dest: "{{ terminal_setup_antidote_dest }}"
+    version: "{{ terminal_setup_antidote_repo_version }}"
+    update: true
+  when: ansible_os_family == 'Debian'
+
+- name: Install modern console utilities (eza, bat, fd, fzf, ...)
+  # На Debian (apt) нужны права root, на macOS Homebrew работает от пользователя
+  become: "{{ ansible_os_family == 'Debian' }}"
   ansible.builtin.package:
-    name: "{{ terminal_setup_modern_console_utils + terminal_setup_console_utils }}"
-    use: homebrew
+    name: "{{ terminal_setup_modern_console_utils }}"
     state: present
+
+- name: Install console utilities (kubectl, docker, vim, ...)
+  # На Debian (apt) нужны права root, на macOS Homebrew работает от пользователя
+  become: "{{ ansible_os_family == 'Debian' }}"
+  ansible.builtin.package:
+    name: "{{ terminal_setup_console_utils }}"
+    state: present
+
+- name: Set zsh as the login shell (Debian)
+  # На macOS zsh - оболочка по умолчанию со времён Catalina, менять нечего.
+  # Идёт после установки пакетов: zsh должен быть уже на месте
+  ansible.builtin.user:
+    name: "{{ ansible_user_id }}"
+    shell: /usr/bin/zsh
+  become: true
+  when: ansible_os_family == 'Debian'
+
+# В Debian/Ubuntu бинарники bat/fd называются batcat/fdfind - после установки
+# пакетов создаем симлинки в ~/.local/bin, чтобы команды совпадали с macOS
+- name: Ensure ~/.local/bin exists (Debian)
+  when: ansible_os_family == 'Debian'
+  ansible.builtin.file:
+    path: "{{ [ansible_user_dir, '.local/bin'] | path_join }}"
+    state: directory
+    mode: '0755'
+
+- name: Symlink batcat/fdfind to ~/.local/bin (Debian)
+  when: ansible_os_family == 'Debian'
+  ansible.builtin.file:
+    src: "/usr/bin/{{ item.src }}"
+    dest: "{{ [ansible_user_dir, '.local/bin', item.dest] | path_join }}"
+    state: link
+    force: true
+  loop:
+    - { src: "batcat", dest: "bat" }
+    - { src: "fdfind", dest: "fd" }
+
+- name: Set Linux arch suffix for binary downloads (Debian)
+  when: ansible_os_family == 'Debian'
+  ansible.builtin.set_fact:
+    terminal_setup_linux_arch: "{{ terminal_setup_arch_map[ansible_architecture] }}"
+
+- name: Install tools missing from apt (Debian)
+  # Один файл на инструмент: tasks/debian_tools/<tool>_setup.ansible.yml.
+  # Переменные для каждого - рядом, в vars/Debian/<tool>_vars.yml
+  ansible.builtin.include_tasks: "debian_tools/{{ item }}_setup.ansible.yml"
+  loop:
+    - kubectl
+    - uv
+    - tenv
+    - fastfetch
+    - gitlab_ci_local
+  when: ansible_os_family == 'Debian'
 
 - name: Ensure zsh XDG directories exist
   ansible.builtin.file:
@@ -95,12 +181,12 @@
     file_type: file
   delegate_to: localhost
   become: false
-  register: source_template_files
+  register: terminal_setup_source_template_files
 
 - name: Compute source template paths relative to the template root
   ansible.builtin.set_fact:
-    source_template_rel: >-
-      {{ source_template_files.files
+    terminal_setup_source_template_rel: >-
+      {{ terminal_setup_source_template_files.files
          | map(attribute='path')
          | map('replace', role_path + '/files/templates-for-functions/', '')
          | list }}
@@ -110,16 +196,16 @@
     paths: "{{ [terminal_setup_config_dir, 'templates-for-functions'] | path_join }}"
     recurse: true
     file_type: file
-  register: deployed_template_files
+  register: terminal_setup_deployed_template_files
 
 - name: Remove stale files from deployed templates
   ansible.builtin.file:
     path: "{{ item.path }}"
     state: absent
-  loop: "{{ deployed_template_files.files }}"
+  loop: "{{ terminal_setup_deployed_template_files.files }}"
   when: >-
     (item.path | replace(terminal_setup_config_dir + '/templates-for-functions/', ''))
-    not in source_template_rel
+    not in terminal_setup_source_template_rel
 
 - name: Move old .zsh_history file to XDG directory
   ansible.builtin.command: mv "{{ [ansible_user_dir, '.zsh_history'] | path_join }}" "{{ [terminal_setup_state_dir, 'history'] | path_join }}"

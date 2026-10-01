@@ -1,0 +1,8 @@
+---
+# gitlab-ci-local: в apt отсутствует, ставим standalone-бинарник из релиза
+# GitHub (firecow/gitlab-ci-local) в ~/.local/bin, без прав root.
+# Собственный apt-репозиторий проекта (ppa.firecow.dk, за Cloudflare) не
+# используем: из некоторых сетей он недоступен (connection timeout).
+# Версия пинится и обновляется вручную. Имена ассетов используют "arm64".
+terminal_setup_gitlab_ci_local_version: "4.76.0"
+terminal_setup_gitlab_ci_local_url_base: "https://github.com/firecow/gitlab-ci-local/releases/download"

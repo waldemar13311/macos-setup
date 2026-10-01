@@ -2,7 +2,8 @@
 .ansible/*
 !.ansible/requirements.yml
 
-uv.lock
+# Экспорт сессий Claude Code
+conversation-*.txt
 
 # Claude Code (журнал сессий, локальные настройки)
 .claude/
