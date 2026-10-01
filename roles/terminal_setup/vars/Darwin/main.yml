@@ -20,21 +20,21 @@ terminal_setup_modern_console_utils:
 
 terminal_setup_console_utils:
   - "golang"          # Язык go
-  - "kubectl"         # * K8s клиент
+  - "kubectl"         # K8s клиент
   - "kubectx"         # Менеджер контекстов k8s + менеджер namespaces-ов k8s
   - "jq"              # JSON-парсер
   - "wget"            # Загрузчик файлов
   - "ncdu"            # Анализатор занятого дискового пространства
   - "tldr"            # Упрощенные и лаконичные man-страницы
-  - "uv"              # * Современный менеджер пакетов для python
-  - "tenv"            # * Универсальный установщик OpenTofu, Terraform, Terragrunt и Atmos
+  - "uv"              # Современный менеджер пакетов для python
+  - "tenv"            # Универсальный установщик OpenTofu, Terraform, Terragrunt и Atmos
   - "docker"          # Консольный Docker CLI клиент (команды docker ps, run, build)
   - "docker-compose"  # v2 версия docker compose плагина
   - "docker-buildx"   # buildx плагин для docker
   - "colima"          # Легковесный движок-контейнеризатор (замена Docker Desktop)
   - "vim"             # Текстовый редактор
   - "htop"            # Консольный диспетчер задач
-  - "fastfetch"       # * Вывод базовой информации о системе
+  - "fastfetch"       # Вывод базовой информации о системе
   - "gitlab-ci-local" # Для локального запуска gitlab pipeline
   - "curl"            # Не apple-овский curl
   - "openssl@3"       # Пакет для работы с сертификатами

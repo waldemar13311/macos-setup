@@ -166,6 +166,26 @@ my_pbcopy() {
 }
 # endregion
 
+# region === my_pbpaste ===
+# Функция-обертка для вставки из буфера (на неё есть алиас paste).
+# Выводит содержимое буфера обмена в stdout без украшений - рассчитана
+# на пайпы (paste | grep ...). macOS - pbpaste; Linux - wl-paste (Wayland)
+# или xclip (X11)
+my_pbpaste() {
+    if (( $+commands[pbpaste] )); then
+        pbpaste
+    elif (( $+commands[wl-paste] )); then
+        # --no-newline: не добавлять \n, если в буфере его нет (как у pbpaste)
+        wl-paste --no-newline
+    elif (( $+commands[xclip] )); then
+        xclip -out -selection clipboard
+    else
+        echo "❌ Не найдена утилита буфера обмена (pbpaste/wl-paste/xclip)" >&2
+        return 1
+    fi
+}
+# endregion
+
 # region === tree wrapper ===
 # tree - Умная обёртка над eza для вывода красивого дерева с поддержкой флага -i/--ignore
 tree() {

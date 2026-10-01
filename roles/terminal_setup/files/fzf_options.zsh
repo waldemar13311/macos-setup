@@ -1,7 +1,9 @@
 # --- Настройки fzf и fzf-widgets ---
 export FZF_TMUX=0
 # Настройка внешнего вида (на весь экран и список сверху вниз)
-export FZF_DEFAULT_OPTS=" --height 100% --reverse"
+# --no-mouse - не захватывать мышь: работает обычное терминальное выделение
+# текста (drag без Shift), но клики по пунктам перестают выбирать строки
+export FZF_DEFAULT_OPTS=" --height 100% --reverse --no-mouse"
 
 # Настройки fd
 # Включаем fd для поиска в fzf-widgets (чтобы искало моментально)

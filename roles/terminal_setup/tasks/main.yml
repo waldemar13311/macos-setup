@@ -123,6 +123,7 @@
   # Переменные для каждого - рядом, в vars/Debian/<tool>_vars.yml
   ansible.builtin.include_tasks: "debian_tools/{{ item }}_setup.ansible.yml"
   loop:
+    - fzf
     - kubectl
     - uv
     - tenv

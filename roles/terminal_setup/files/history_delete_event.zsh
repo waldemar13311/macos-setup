@@ -104,6 +104,9 @@ elif [[ -n "$target_head" ]]; then
   done
 fi
 
-(( del_start )) && sed -i "" "${del_start},${del_end}d" "$HISTFILE"
+# perl (а не sed -i): у BSD- и GNU-sed разный синтаксис in-place редактирования
+# (BSD требует пустой суффикс-аргумент), perl работает одинаково на macOS и Linux.
+# del_start/del_end - валидные числа (спарсены выше), интерполяция безопасна
+(( del_start )) && perl -ni -e "print unless $. >= $del_start && $. <= $del_end" "$HISTFILE"
 
 _print_list

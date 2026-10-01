@@ -1,0 +1,32 @@
+---
+# fzf: свежий релиз с GitHub вместо устаревшего apt-пакета.
+# Ссылки и пиновая версия - в vars/Debian/fzf_vars.yml.
+# Каталоги загрузки/распаковки содержат версию: при поднятии пина бинарник обновится.
+- name: Download fzf (Debian)
+  ansible.builtin.get_url:
+    url: >-
+      {{ terminal_setup_fzf_url_base }}/{{ terminal_setup_fzf_version }}/fzf-{{
+      terminal_setup_fzf_version[1:] }}-linux_{{ terminal_setup_linux_arch }}.tar.gz
+    dest: "/tmp/fzf-{{ terminal_setup_fzf_version }}.tar.gz"
+    mode: '0644'
+
+- name: Ensure fzf extraction directory exists (Debian)
+  # unarchive требует существующий dest (в отличие от dpkg-deb -x)
+  ansible.builtin.file:
+    path: "/tmp/fzf-{{ terminal_setup_fzf_version }}-extracted"
+    state: directory
+    mode: '0755'
+
+- name: Extract fzf (Debian)
+  ansible.builtin.unarchive:
+    src: "/tmp/fzf-{{ terminal_setup_fzf_version }}.tar.gz"
+    dest: "/tmp/fzf-{{ terminal_setup_fzf_version }}-extracted"
+    remote_src: true
+    creates: "/tmp/fzf-{{ terminal_setup_fzf_version }}-extracted/fzf"
+
+- name: Install fzf binary to ~/.local/bin (Debian)
+  ansible.builtin.copy:
+    src: "/tmp/fzf-{{ terminal_setup_fzf_version }}-extracted/fzf"
+    dest: "{{ [ansible_user_dir, '.local/bin/fzf'] | path_join }}"
+    mode: '0755'
+    remote_src: true

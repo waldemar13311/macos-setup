@@ -1,0 +1,8 @@
+---
+# fzf: apt-версия в Ubuntu 24.04 (0.44) слишком старая - не знает клавишу
+# `delete` в --bind (нужна виджету Ctrl+R) и другие новшества.
+# Ставим релиз с GitHub в ~/.local/bin - он перекрывает apt-версию
+# (~/.local/bin стоит первым в PATH).
+# Версия пинится и обновляется вручную. В ассетах версия без префикса "v".
+terminal_setup_fzf_version: "v0.74.4"
+terminal_setup_fzf_url_base: "https://github.com/junegunn/fzf/releases/download"

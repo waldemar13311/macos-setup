@@ -1,10 +1,6 @@
 ---
 # Общие переменные Debian/Ubuntu (apt): списки пакетов и платформенные пути.
 # Списки рассчитаны на Ubuntu 24.04 (noble) и новее.
-#
-# Инструменты, которых нет в apt, разложены по файлам рядом:
-#   kubectl_vars.yml, uv_vars.yml, tenv_vars.yml,
-#   fastfetch_vars.yml, gitlab_ci_local_vars.yml
 
 # Соответствие ansible_architecture -> суффикс релизов Linux
 # (используется в *_vars.yml для скачивания бинарников)
@@ -25,10 +21,10 @@ terminal_setup_modern_console_utils:
   - "eza"           # Замена ls
   - "zoxide"        # Продвинутый cd
   - "fd-find"       # Замена find (бинарник называется fdfind - симлинк создаётся ролью)
-  - "fzf"           # Полезные виджеты
   - "trash-cli"     # Замена rm (freedesktop-корзина)
   - "wl-clipboard"  # wl-copy/wl-paste - буфер обмена под Wayland
   - "xclip"         # Буфер обмена под X11
+  # fzf ставится отдельной таской из GitHub-релиза (apt-версия слишком старая)
 
 terminal_setup_console_utils:
   - "zsh"                 # На macOS zsh предустановлен, на Ubuntu - нет
@@ -45,3 +41,13 @@ terminal_setup_console_utils:
   - "htop"                # Консольный диспетчер задач
   - "curl"                # Загрузчик файлов
   - "openssl"             # Пакет для работы с сертификатами
+  # Дальше - полный паритет с Darwin-списком, но этих пакетов в apt нет
+  # (или apt-версии устарели), поэтому они закомментированы: ставятся отдельными
+  # тасками из релизов - tasks/debian_tools/<name>_setup.ansible.yml,
+  # параметры и пины версий - vars/Debian/<name>_vars.yml
+  # - "fzf"              # релиз GitHub, apt-версия 0.44 слишком старая (см. modern list выше)
+  # - "kubectl"          # бинарник с dl.k8s.io (последний стабильный)
+  # - "uv"               # официальный инсталлятор astral.sh
+  # - "tenv"             # .deb из релиза GitHub
+  # - "fastfetch"        # .deb из релиза GitHub
+  # - "gitlab-ci-local"  # бинарник из релиза GitHub

@@ -10,6 +10,11 @@ alias rm="trash"
 
 alias copy="my_pbcopy"
 
+# paste - вывести буфер обмена в stdout (напр.: paste | grep ...)
+# ВНИМАНИЕ: перекрывает системную утилиту paste (склейка строк файлов) -
+# если понадобится настоящая, вызывайте её как `command paste`
+alias paste="my_pbpaste"
+
 alias diff="git diff --no-index --color"
 
 alias k="kubectl"
