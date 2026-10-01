@@ -2,12 +2,12 @@ all:
   hosts:
     # Пример удалённого Mac-хоста (раскомментируйте и подставьте свои значения)
     macos:
-      ansible_host: 192.168.64.77 # Замените на свой IP
+      ansible_host: 192.168.64.77 # Замените на свой hostname или IP
       ansible_user: user
     # Пример удалённого Linux-хоста (раскомментируйте и подставьте свои значения)
     ubuntu:
-      ansible_host: 192.168.139.80 # Замените на свой IP
-      ansible_user: user
+      ansible_host: 192.168.139.80 # Замените на свой hostname или IP
+      ansible_user: ansible-user
     localhost:
       ansible_connection: local
       ansible_python_interpreter: "{{ ansible_playbook_python }}"
