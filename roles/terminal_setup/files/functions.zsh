@@ -44,7 +44,7 @@ path_run() {
       return 1
     fi
 
-    # Нормализуем путь (схлопывает '.', '..', 'dir/.'): macos-setup/. -> .../macos-setup.
+    # Нормализуем путь (схлопывает '.', '..', 'dir/.'): workstation-setup/. -> .../workstation-setup.
     # Без этого fd с glob-именем "." ничего не найдет
     local target="${arg:a}"
 
@@ -434,8 +434,8 @@ https-proxy-vars-example () {
 # region === ansible-project-init ===
 # ansible-project-init - Создает в новой папке скелет простого ansible-проекта
 # на основе шаблона из ~/.config/zsh/templates-for-functions/ansible-project-init
-# (структура повторяет этот репозиторий: macos-setup).
-# Сам шаблон лежит в macos-setup: roles/terminal_setup/files/templates-for-functions/ansible-project-init
+# (структура повторяет этот репозиторий: workstation-setup).
+# Сам шаблон лежит в workstation-setup: roles/terminal_setup/files/templates-for-functions/ansible-project-init
 # и раскладывается ролью terminal_setup - правим структуру там.
 # Имя проекта подставляется в pyproject.toml (name, description) и README.md.
 # Использование:

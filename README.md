@@ -1,4 +1,4 @@
-# macos-setup
+# workstation-setup
 
 Личные Ansible-плейбуки для настройки macOS и Linux (Debian/Ubuntu): Zsh с [Antidote](https://github.com/mattmc3/antidote), плагинами Oh My Zsh, тема, алиасы, утилиты, `~/.vimrc`. Всё собирается ролью `terminal_setup`; отдельно есть playbook для десктопных приложений.
 
@@ -8,8 +8,8 @@
 ### Подготовка
 
 ```bash
-git clone https://github.com/waldemar13311/macos-setup.git
-cd macos-setup
+git clone https://github.com/waldemar13311/workstation-setup.git
+cd workstation-setup
 uv sync
 source .venv/bin/activate
 ```
