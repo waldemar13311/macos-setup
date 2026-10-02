@@ -1,7 +1,7 @@
 # macOS: приложения через Homebrew Cask
 desktop_casks:
   - google-chrome
-  - visual-studio-codeПу
+  - visual-studio-code
   - font-jetbrains-mono-nerd-font
 
 # Debian/Ubuntu: приложения через apt (.deb) и apt-пакеты
