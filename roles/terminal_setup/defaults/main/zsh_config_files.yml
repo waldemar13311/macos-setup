@@ -4,6 +4,7 @@ terminal_setup_zsh_config_files:
   - ".zshrc"
   - "variables.zsh"
   - "fzf_options.zsh"
+  - "zoxide_options.zsh"
   - "history_options.zsh"
   - "hotkeys.zsh"
   - "alias.zsh"
