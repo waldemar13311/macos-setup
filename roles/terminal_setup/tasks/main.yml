@@ -162,6 +162,10 @@
     dest: "{{ [terminal_setup_config_dir, item] | path_join }}"
     mode: "0644"
     owner: "{{ ansible_user_id }}"
+    # force: false - copy модуль переносит файл только если dest ещё не существует.
+    # Для work_variables.zsh так и нужно: это локальные настройки хоста, повторный
+    # запуск роли их не затирает. Для остальных файлов - обычное поведение
+    force: "{{ item != 'work_variables.zsh' }}"
   loop: "{{ terminal_setup_zsh_config_files }}"
   notify: Initialize Antidote plugins
 
