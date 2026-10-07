@@ -21,6 +21,31 @@
     modification_time: preserve
     access_time: preserve
 
+- name: Find dnsmasq plist in Homebrew (macOS)
+  ansible.builtin.find:
+    paths:
+      - /opt/homebrew/opt/dnsmasq
+      - /usr/local/opt/dnsmasq
+    patterns: "*.plist"
+  register: dnsmasq_plist_find
+  when: ansible_os_family == 'Darwin'
+
+- name: Set facts for dnsmasq plist path and service name (macOS)
+  ansible.builtin.set_fact:
+    dnsmasq_plist_src: "{{ dnsmasq_plist_find.files[0].path }}"
+    dnsmasq_service_name: "{{ dnsmasq_plist_find.files[0].path | basename | regex_replace('\\.plist$', '') }}"
+  when:
+    - ansible_os_family == 'Darwin'
+    - dnsmasq_plist_find.matched | default(0) > 0
+
+- name: Set facts for dnsmasq plist path and service name (macOS)
+  ansible.builtin.set_fact:
+    dnsmasq_plist_src: "{{ dnsmasq_plist_find.files[0].path }}"
+    dnsmasq_service_name: "{{ dnsmasq_plist_find.files[0].path | basename | regex_replace('\\.plist$', '') }}"
+  when:
+    - ansible_os_family == 'Darwin'
+    - dnsmasq_plist_find.matched | default(0) > 0
+
 - name: Copy dnsmasq LaunchDaemon plist (macOS)
   # Управляем launchd напрямую, а не через brew services: brew от root хрупок
   # (не качает API-метаданные, launchctl bootstrap падает/зависает).
@@ -30,20 +55,19 @@
   # его занять не может)
   become: true
   ansible.builtin.copy:
-    src: /opt/homebrew/opt/dnsmasq/sh.brew.dnsmasq.plist
+    src: "{{ dnsmasq_plist_src }}"
     remote_src: true
-    dest: /Library/LaunchDaemons/sh.brew.dnsmasq.plist
+    dest: "/Library/LaunchDaemons/{{ dnsmasq_service_name }}.plist"
     owner: root
     group: wheel
     mode: "0644"
-  # Конфиг dnsmasq меняет поведение демона: рестартим и при обновлении plist
   notify: Restart dnsmasq
   when: ansible_os_family == 'Darwin'
 
 - name: Ensure dnsmasq service is started and enabled (macOS)
   become: true
   community.general.launchd:
-    name: sh.brew.dnsmasq
+    name: "{{ dnsmasq_service_name }}"
     state: started
     enabled: true
   when: ansible_os_family == 'Darwin'
