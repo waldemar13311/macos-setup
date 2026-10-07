@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: waldemar13311 (https://github.com/waldemar13311)
-  description: Terminal setup
+  description: Background services setup
   company: Home lab
 
   license: AGPL-3.0-or-later
@@ -20,8 +20,5 @@ galaxy_info:
   galaxy_tags:
     - macos
     - linux
-    - zsh
-    - antidote
-    - dotfiles
-    - terminal
-    - development
+    - dnsmasq
+    - services

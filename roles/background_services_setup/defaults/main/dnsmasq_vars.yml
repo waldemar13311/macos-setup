@@ -1,0 +1,25 @@
+---
+# Параметры dnsmasq (по файлу-на-сервис, как *_vars.yml в terminal_setup).
+# Всё, что лежит в defaults - переопределяется через inventory (host_vars/group_vars):
+
+# DNS-серверы, раздаваемые dnsmasq клиентам (строки "server=..." в конфиге)
+background_services_setup_dns_servers:
+  - "8.8.8.8"
+  - "8.8.4.4"
+
+# Настройки, рендерятся в templates/dnsmasq.conf.j2
+
+background_services_setup_dnsmasq_interface: "*"             # interface=
+
+# По умолчанию только loopback - dnsmasq как локальный резолвер.
+# LAN-адрес хоста добавляйте через inventory: он зависит от DHCP и при
+# ошибке в нём dnsmasq не сможет забиндиться и будет падать на старте
+background_services_setup_dnsmasq_listen_addresses:          # listen-address= (через запятую)
+  - "127.0.0.1"
+# Добавьте при необходимости
+#  - "127.0.0.2"
+#  - "192.168.1.15"
+background_services_setup_dnsmasq_cache_size: 5000           # cache-size=
+background_services_setup_dnsmasq_local_domains:             # local=/домен/ - запросы в эти
+  - "home"                                                   # домены не уходят наружу
+background_services_setup_dnsmasq_domain: "home"             # domain=

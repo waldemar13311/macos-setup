@@ -11,3 +11,13 @@ all:
     localhost:
       ansible_connection: local
       ansible_python_interpreter: "{{ ansible_playbook_python }}"
+      # DNS-серверы для dnsmasq на этом хосте (переопределяют defaults роли,
+      # по умолчанию 8.8.8.8 и 8.8.4.4)
+      # Это акадо DNS
+      background_services_setup_dns_servers:
+        - "217.10.36.5"
+        - "217.10.44.35"
+        - "217.10.39.54"
+      background_services_setup_dnsmasq_listen_addresses:
+        - "127.0.0.1"
+

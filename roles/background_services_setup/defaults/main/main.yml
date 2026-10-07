@@ -1,0 +1,7 @@
+---
+# Переменные по сервисам разложены по файлам (по файлу-на-сервис):
+# dnsmasq_vars.yml - параметры dnsmasq.
+#
+# ОС-зависимые пути (конфиг, addn-hosts) лежат отдельно:
+# в vars/Darwin/main.yml (Homebrew) и vars/Debian/main.yml (apt); подключаются
+# в tasks/main.yml по ansible_os_family.
