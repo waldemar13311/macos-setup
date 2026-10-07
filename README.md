@@ -1,6 +1,6 @@
 # workstation-setup
 
-Личные Ansible-плейбуки для настройки macOS и Linux (Debian/Ubuntu): Zsh с [Antidote](https://github.com/mattmc3/antidote), плагинами Oh My Zsh, тема, алиасы, утилиты, `~/.vimrc`. Всё собирается ролью `terminal_setup`; отдельно есть playbook для десктопных приложений.
+Личные Ansible-плейбуки для настройки macOS и Linux (Debian/Ubuntu): Zsh с [Antidote](https://github.com/mattmc3/antidote), плагинами Oh My Zsh, тема, алиасы, утилиты, `~/.vimrc`. Всё собирается ролью `terminal_setup`; отдельно есть плейбуки для десктопных приложений и фоновых служб (dnsmasq и др.).
 
 > [!WARNING]
 > Роль перезаписывает существующие dotfiles: заменяет `~/.zshenv`, `~/.config/zsh/*`, `~/.config/vim/.vimrc`, `~/.terraformrc`, удаляет `~/.vimrc` и git-completion из Homebrew, переносит `~/.zsh_history` в XDG-каталог. Если у вас свои конфиги - сделайте бэкап перед запуском.
@@ -23,8 +23,7 @@ ansible-galaxy install -r .ansible/requirements.yml
 ```
 
 ### Запуск
-
-Оба плейбука объявлены с `hosts: all` - конкретную цель выбираем флагом `--limit`, а не правкой плейбука:
+Плейбуки объявлены с `hosts: all` - конкретную цель выбираем флагом `--limit`, а не правкой плейбука:
 
 ```bash
 # терминал: zsh, плагины, тема, утилиты, vim, docker completion
@@ -42,6 +41,13 @@ ansible-playbook playbooks/desktop_apps_setup.ansible.yml --limit localhost
 
 # десктоп на ubuntu-хосте (apt-таски с become - нужен пароль sudo)
 ansible-playbook playbooks/desktop_apps_setup.ansible.yml --limit ubuntu -K
+
+# фоновые службы: dnsmasq (конфиг из переменных роли, автостарт, рестарт при изменении конфига)
+# -K: таска сервиса идёт с become - dnsmasq занимает привилегированный порт 53
+ansible-playbook playbooks/background_services_setup.ansible.yml --limit localhost -K
+
+# фоновые службы на ubuntu-хосте (apt-таски с become - нужен пароль sudo)
+ansible-playbook playbooks/background_services_setup.ansible.yml --limit ubuntu -K
 ```
 
 Списки плагинов и общие переменные - в `roles/terminal_setup/defaults/main/`. Списки пакетов зависят от ОС и лежат в `roles/terminal_setup/vars/`: `Darwin/` (Homebrew) и `Debian/` (apt, по файлу на инструмент без apt-пакета).
