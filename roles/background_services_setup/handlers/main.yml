@@ -1,0 +1,20 @@
+---
+# Handlers роли background_services_setup.
+# Задачи-источники шлют notify: "Restart dnsmasq" - реально выполняется
+# хендлер под текущую ОС.
+
+- name: Restart dnsmasq (macOS)
+  become: true
+  community.general.launchd:
+    name: sh.brew.dnsmasq
+    state: restarted
+  when: ansible_os_family == 'Darwin'
+  listen: Restart dnsmasq
+
+- name: Restart dnsmasq (Debian)
+  become: true
+  ansible.builtin.systemd:
+    name: dnsmasq
+    state: restarted
+  when: ansible_os_family == 'Debian'
+  listen: Restart dnsmasq

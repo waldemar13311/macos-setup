@@ -1,0 +1,87 @@
+---
+# Настройка dnsmasq: рендер основного конфига из templates/dnsmasq.conf.j2.
+# Значения опций - в defaults/main/dnsmasq_vars.yml (переопределяются через inventory),
+# ОС-зависимые пути (conf, addn-hosts) - в vars/{Darwin,Debian}/main.yml.
+#
+- name: Render dnsmasq config
+  # На Debian конфиг в /etc - нужны права root, на macOS Homebrew-путь доступен пользователю
+  become: "{{ ansible_os_family == 'Debian' }}"
+  ansible.builtin.template:
+    src: dnsmasq.conf.j2
+    dest: "{{ background_services_setup_dnsmasq_conf_path }}"
+    mode: "0644"
+  notify: Restart dnsmasq
+
+- name: Ensure dnsmasq.hosts exists
+  become: "{{ ansible_os_family == 'Debian' }}"
+  ansible.builtin.file:
+    path: "{{ background_services_setup_dnsmasq_addn_hosts_path }}"
+    state: touch
+    mode: "0644"
+    modification_time: preserve
+    access_time: preserve
+
+- name: Copy dnsmasq LaunchDaemon plist (macOS)
+  # Управляем launchd напрямую, а не через brew services: brew от root хрупок
+  # (не качает API-метаданные, launchctl bootstrap падает/зависает).
+  # brew кладёт готовый plist в opt-префикс формулы - копируем его в
+  # /Library/LaunchDaemons: там он и автостартует при загрузке, и dnsmasq
+  # работает от root (порт 53 - привилегированный, LaunchAgent пользователя
+  # его занять не может)
+  become: true
+  ansible.builtin.copy:
+    src: /opt/homebrew/opt/dnsmasq/sh.brew.dnsmasq.plist
+    remote_src: true
+    dest: /Library/LaunchDaemons/sh.brew.dnsmasq.plist
+    owner: root
+    group: wheel
+    mode: "0644"
+  # Конфиг dnsmasq меняет поведение демона: рестартим и при обновлении plist
+  notify: Restart dnsmasq
+  when: ansible_os_family == 'Darwin'
+
+- name: Ensure dnsmasq service is started and enabled (macOS)
+  become: true
+  community.general.launchd:
+    name: sh.brew.dnsmasq
+    state: started
+    enabled: true
+  when: ansible_os_family == 'Darwin'
+
+- name: Ensure dnsmasq service is started and enabled (Debian)
+  become: true
+  ansible.builtin.systemd:
+    name: dnsmasq
+    state: started
+    enabled: true
+  when: ansible_os_family == 'Debian'
+
+- name: Remind to point macOS DNS settings to dnsmasq
+  # Автоматически это делать нельзя: сетевые сервисы macOS называются по-разному
+  # (Wi-Fi, Ethernet, ...), менять вслепую через networksetup опасно
+  ansible.builtin.debug:
+    msg: |
+      dnsmasq настроен. Не забудьте в настройках сети macOS:
+      1) DNS-серверы - добавить:
+         {% for addr in background_services_setup_dnsmasq_listen_addresses %}
+         {{ addr }}
+         {% endfor %}
+      2) Домены поиска - добавить:
+         {{ background_services_setup_dnsmasq_local_domains | join(', ') }}
+      (Системные настройки -> Сеть -> служба -> TCP/IP -> DNS,
+      или networksetup -setdnsservers "<служба>" {{ background_services_setup_dnsmasq_listen_addresses | join(' ') }})
+  when: ansible_os_family == 'Darwin'
+
+- name: Remind to point Linux DNS settings to dnsmasq
+  ansible.builtin.debug:
+    msg: |
+      dnsmasq настроен. Не забудьте направить DNS на dnsmasq:
+      1) в настройках сети или /etc/resolv.conf указать nameserver:
+         {% for addr in background_services_setup_dnsmasq_listen_addresses %}
+         {{ addr }}
+         {% endfor %}
+      2) в домены поиска добавить:
+         {{ background_services_setup_dnsmasq_local_domains | join(', ') }}
+      Внимание: если включён systemd-resolved, его stub на 127.0.0.53 займёт
+      порт 53 - dnsmasq не запустится; отключите DNSStubListener
+  when: ansible_os_family == 'Debian'

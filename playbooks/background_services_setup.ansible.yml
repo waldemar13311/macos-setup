@@ -1,0 +1,8 @@
+---
+- name: Background services setup
+  hosts: all # цель выбирается при запуске: --limit localhost или --limit macos
+  become: false
+  gather_facts: true
+
+  roles:
+    - background_services_setup

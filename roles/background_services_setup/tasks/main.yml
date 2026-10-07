@@ -1,0 +1,22 @@
+---
+- name: Check the OS is supported (Darwin or Debian family)
+  ansible.builtin.assert:
+    that: ansible_os_family in ['Darwin', 'Debian']
+    fail_msg: >-
+      Роль поддерживает macOS (Darwin) и Debian/Ubuntu (Debian),
+      а запущена на {{ ansible_distribution }} ({{ ansible_os_family }})
+
+- name: Load OS-specific variables (package lists, service paths)
+  # Загружаются все файлы каталога: vars/Darwin/main.yml или vars/Debian/main.yml
+  ansible.builtin.include_vars:
+    dir: "{{ ansible_os_family }}/"
+
+- name: Install background services
+  # На Debian (apt) нужны права root, на macOS Homebrew работает от пользователя
+  become: "{{ ansible_os_family == 'Debian' }}"
+  ansible.builtin.package:
+    name: "{{ background_services_setup_packages_to_install }}"
+    state: present
+
+- name: Configure dnsmasq
+  ansible.builtin.include_tasks: dnsmasq_setup.ansible.yml

@@ -1,0 +1,12 @@
+---
+# Переменные для macOS (Homebrew).
+# Подключаются в tasks/main.yml по ansible_os_family == 'Darwin'.
+
+background_services_setup_packages_to_install:
+  - "dnsmasq" # Локальный DNS сервер
+
+# Путь к основному конфигу dnsmasq
+background_services_setup_dnsmasq_conf_path: "/opt/homebrew/etc/dnsmasq.conf"
+
+# Дополнительный hosts-файл (addn-hosts)
+background_services_setup_dnsmasq_addn_hosts_path: "/opt/homebrew/etc/dnsmasq.hosts"
