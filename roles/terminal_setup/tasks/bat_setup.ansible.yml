@@ -1,0 +1,15 @@
+---
+# Настройка bat: конфиг с маппингом синтаксисов (см. комментарий в files/bat_config).
+# bat читает ~/.config/bat/config автоматически, установка самой утилиты - в
+# общем списке пакетов (vars/{Darwin,Debian}/main.yml, modern console utils).
+- name: Ensure ~/.config/bat directory exists
+  ansible.builtin.file:
+    path: "{{ [ansible_user_dir, '.config/bat'] | path_join }}"
+    state: directory
+    mode: "0755"
+
+- name: Deploy bat config (syntax mappings)
+  ansible.builtin.copy:
+    src: bat_config
+    dest: "{{ [ansible_user_dir, '.config/bat/config'] | path_join }}"
+    mode: "0644"

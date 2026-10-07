@@ -29,6 +29,9 @@
 - name: Configure terraform
   ansible.builtin.include_tasks: terraform_setup.ansible.yml
 
+- name: Configure bat
+  ansible.builtin.include_tasks: bat_setup.ansible.yml
+
 - name: Find all zcompdump files
   ansible.builtin.find:
     paths: "{{ ansible_user_dir }}"

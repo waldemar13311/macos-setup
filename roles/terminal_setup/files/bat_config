@@ -1,0 +1,9 @@
+# Конфиг bat (https://github.com/sharkdp/bat).
+# bat читает его автоматически из ~/.config/bat/config.
+
+# *.conf с ключ=значение не знают своего синтаксиса в bat и
+# отображаются Plain Text, хотя vim их раскрашивает. Маппим на встроенный
+# синтаксис INI: ключи и значения в разных цветах, комментарии приглушены.
+# Шаблон "*dnsmasq*.conf" покрывает и /opt/homebrew/etc/dnsmasq.conf,
+# и файлы в /opt/homebrew/etc/dnsmasq.d/
+--map-syntax="*dnsmasq*.conf:INI"
