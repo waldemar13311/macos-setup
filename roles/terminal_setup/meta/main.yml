@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: waldemar13311 (https://github.com/waldemar13311)
-  description: Base zsh setup
+  description: Terminal setup
   company: Home lab
 
   license: AGPL-3.0-or-later

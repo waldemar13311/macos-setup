@@ -1,5 +1,5 @@
 ---
-- name: Base terminal setup
+- name: Terminal setup
   hosts: all # цель выбирается при запуске: --limit localhost или --limit macos
   become: false
   gather_facts: true

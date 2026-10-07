@@ -1,4 +1,4 @@
-- name: Base desktop apps installation
+- name: Desktop apps setup
   hosts: all # цель выбирается при запуске: --limit localhost или --limit macos
   become: false
   gather_facts: true
