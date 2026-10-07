@@ -4,7 +4,7 @@
 # zoxide_options.zsh - менять в одном месте:
 #   --highlight-line        - закрашивать строку на всю ширину экрана
 #   --color=bg+:...,fg+:... - фон и текст выделенной строки
-export FZF_HIGHLIGHT_LINE_OPTS="--highlight-line --color=bg+:#49483E,fg+:#F8F8F2"
+export FZF_HIGHLIGHT_LINE_OPTS="--highlight-line --color=bg+:238,fg+:253,hl+:197"
 
 # Консольный редактор по умолчанию
 export EDITOR="vim"
