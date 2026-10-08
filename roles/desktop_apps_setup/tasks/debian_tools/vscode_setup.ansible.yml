@@ -1,0 +1,16 @@
+---
+# VS Code: официального apt-пакета нет - качаем .deb с update.code.visualstudio.com
+# и ставим через apt. Установка .deb подключает apt-репозиторий Microsoft,
+# дальнейшие обновления приедут через apt upgrade.
+# URL - в vars/Debian/vscode_vars.yml
+- name: Download VS Code .deb (Debian)
+  ansible.builtin.get_url:
+    url: "{{ desktop_apps_setup_vscode_deb_url }}"
+    dest: "{{ [desktop_apps_setup_deb_download_dir, 'vscode.deb'] | path_join }}"
+    mode: '0644'
+
+- name: Install VS Code .deb (Debian)
+  become: true
+  ansible.builtin.apt:
+    deb: "{{ [desktop_apps_setup_deb_download_dir, 'vscode.deb'] | path_join }}"
+    state: present

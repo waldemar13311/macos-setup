@@ -1,0 +1,43 @@
+---
+- name: Check the OS is supported (Darwin or Debian family)
+  ansible.builtin.assert:
+    that: ansible_os_family in ['Darwin', 'Debian']
+    fail_msg: >-
+      Роль поддерживает macOS (Darwin) и Debian/Ubuntu (Debian),
+      а запущена на {{ ansible_distribution }} ({{ ansible_os_family }})
+
+- name: Load OS-specific variables (app lists, .deb URLs)
+  # Загружаются все файлы каталога: vars/Darwin/main.yml или vars/Debian/*.yml
+  ansible.builtin.include_vars:
+    dir: "{{ ansible_os_family }}/"
+
+- name: Install desktop apps via Homebrew Cask (macOS)
+  # Один файл на cask: tasks/darwin_cask_setup.ansible.yml сам пропускает
+  # уже установленные (через brew или вручную), не качая дистрибутив
+  ansible.builtin.include_tasks: darwin_cask_setup.ansible.yml
+  loop: "{{ desktop_apps_setup_casks }}"
+  loop_control:
+    loop_var: desktop_apps_setup_cask
+  when: ansible_os_family == 'Darwin'
+
+- name: Install apt desktop packages (Debian)
+  # На apt нужны права root, Homebrew Cask на macOS работает от пользователя
+  become: true
+  ansible.builtin.apt:
+    name: "{{ desktop_apps_setup_apt_packages }}"
+    state: present
+  when: ansible_os_family == 'Debian'
+
+- name: Ensure .deb download directory exists (Debian)
+  ansible.builtin.file:
+    path: "{{ desktop_apps_setup_deb_download_dir }}"
+    state: directory
+    mode: '0700'
+  when: ansible_os_family == 'Debian'
+
+- name: Install apps without apt package (Debian)
+  # Один файл на приложение: tasks/debian_tools/<app>_setup.ansible.yml.
+  # Список приложений и рецепт добавления новых - в vars/Debian/main.yml
+  ansible.builtin.include_tasks: "debian_tools/{{ item }}_setup.ansible.yml"
+  loop: "{{ desktop_apps_setup_debian_extra_apps }}"
+  when: ansible_os_family == 'Debian'
