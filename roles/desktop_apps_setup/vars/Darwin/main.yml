@@ -10,3 +10,4 @@ desktop_apps_setup_casks:
   - google-chrome
   - visual-studio-code
   - font-jetbrains-mono-nerd-font
+  - pika                            # Пипетка для mac
