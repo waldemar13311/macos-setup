@@ -1,0 +1,4 @@
+---
+# Списки приложений зависят от ОС и лежат в vars/Darwin/main.yml (Homebrew Cask)
+# и vars/Debian/*.yml (apt + официальные .deb); подключаются в tasks/main.yml
+# по ansible_os_family.

@@ -123,15 +123,9 @@
 
 - name: Install tools missing from apt (Debian)
   # Один файл на инструмент: tasks/debian_tools/<tool>_setup.ansible.yml.
-  # Переменные для каждого - рядом, в vars/Debian/<tool>_vars.yml
+  # Список инструментов и рецепт добавления новых - в vars/Debian/main.yml
   ansible.builtin.include_tasks: "debian_tools/{{ item }}_setup.ansible.yml"
-  loop:
-    - fzf
-    - kubectl
-    - uv
-    - tenv
-    - fastfetch
-    - gitlab_ci_local
+  loop: "{{ terminal_setup_debian_extra_tools }}"
   when: ansible_os_family == 'Debian'
 
 - name: Ensure zsh XDG directories exist

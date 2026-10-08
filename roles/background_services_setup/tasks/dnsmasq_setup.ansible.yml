@@ -22,29 +22,25 @@
     access_time: preserve
 
 - name: Find dnsmasq plist in Homebrew (macOS)
+  # Ищем в обоих префиксах: /opt/homebrew (Apple Silicon) и /usr/local (Intel)
   ansible.builtin.find:
     paths:
       - /opt/homebrew/opt/dnsmasq
       - /usr/local/opt/dnsmasq
     patterns: "*.plist"
-  register: dnsmasq_plist_find
+  register: background_services_setup_dnsmasq_plist_find
   when: ansible_os_family == 'Darwin'
 
 - name: Set facts for dnsmasq plist path and service name (macOS)
   ansible.builtin.set_fact:
-    dnsmasq_plist_src: "{{ dnsmasq_plist_find.files[0].path }}"
-    dnsmasq_service_name: "{{ dnsmasq_plist_find.files[0].path | basename | regex_replace('\\.plist$', '') }}"
+    background_services_setup_dnsmasq_plist_src: "{{ background_services_setup_dnsmasq_plist_find.files[0].path }}"
+    # Лейбл сервиса - имя plist-файла без расширения (например, sh.brew.dnsmasq)
+    background_services_setup_dnsmasq_service_name: >-
+      {{ background_services_setup_dnsmasq_plist_find.files[0].path
+         | basename | regex_replace('\.plist$', '') }}
   when:
     - ansible_os_family == 'Darwin'
-    - dnsmasq_plist_find.matched | default(0) > 0
-
-- name: Set facts for dnsmasq plist path and service name (macOS)
-  ansible.builtin.set_fact:
-    dnsmasq_plist_src: "{{ dnsmasq_plist_find.files[0].path }}"
-    dnsmasq_service_name: "{{ dnsmasq_plist_find.files[0].path | basename | regex_replace('\\.plist$', '') }}"
-  when:
-    - ansible_os_family == 'Darwin'
-    - dnsmasq_plist_find.matched | default(0) > 0
+    - background_services_setup_dnsmasq_plist_find.matched | default(0) > 0
 
 - name: Copy dnsmasq LaunchDaemon plist (macOS)
   # Управляем launchd напрямую, а не через brew services: brew от root хрупок
@@ -55,9 +51,9 @@
   # его занять не может)
   become: true
   ansible.builtin.copy:
-    src: "{{ dnsmasq_plist_src }}"
+    src: "{{ background_services_setup_dnsmasq_plist_src }}"
     remote_src: true
-    dest: "/Library/LaunchDaemons/{{ dnsmasq_service_name }}.plist"
+    dest: "/Library/LaunchDaemons/{{ background_services_setup_dnsmasq_service_name }}.plist"
     owner: root
     group: wheel
     mode: "0644"
@@ -67,7 +63,7 @@
 - name: Ensure dnsmasq service is started and enabled (macOS)
   become: true
   community.general.launchd:
-    name: "{{ dnsmasq_service_name }}"
+    name: "{{ background_services_setup_dnsmasq_service_name }}"
     state: started
     enabled: true
   when: ansible_os_family == 'Darwin'

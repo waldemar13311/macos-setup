@@ -1,0 +1,4 @@
+---
+# VS Code: в стандартных apt-репозиториях нет, качаем .deb с update.code.visualstudio.com.
+# Установка .deb подключает репозиторий Microsoft - обновления приедут через apt upgrade
+desktop_apps_setup_vscode_deb_url: "https://update.code.visualstudio.com/latest/linux-deb-x64/stable"

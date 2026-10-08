@@ -1,0 +1,16 @@
+---
+# Google Chrome: официального apt-пакета нет - качаем .deb с dl.google.com
+# и ставим через apt. Установка .deb подключает apt-репозиторий Chrome,
+# дальнейшие обновления приедут через apt upgrade.
+# URL - в vars/Debian/chrome_vars.yml
+- name: Download Google Chrome .deb (Debian)
+  ansible.builtin.get_url:
+    url: "{{ desktop_apps_setup_chrome_deb_url }}"
+    dest: "{{ [desktop_apps_setup_deb_download_dir, 'google-chrome-stable.deb'] | path_join }}"
+    mode: '0644'
+
+- name: Install Google Chrome .deb (Debian)
+  become: true
+  ansible.builtin.apt:
+    deb: "{{ [desktop_apps_setup_deb_download_dir, 'google-chrome-stable.deb'] | path_join }}"
+    state: present

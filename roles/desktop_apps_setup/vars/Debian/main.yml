@@ -1,0 +1,23 @@
+---
+# Переменные для Debian/Ubuntu (apt + официальные .deb).
+
+# Приложения из стандартных apt-репозиториев
+desktop_apps_setup_apt_packages:
+  - "fonts-jetbrains-mono" # JetBrains Mono (не Nerd-вариант)
+
+# Каталог для скачанных .deb (используется в tasks/debian_tools/*).
+# mode 0700 задаётся при создании таской download-dir: /tmp - world-writable,
+# без этого другой локальный пользователь мог бы подменить .deb перед apt install
+desktop_apps_setup_deb_download_dir: "/tmp/desktop-apps-debs"
+
+# Приложения без apt-пакета - ставятся из сторонних источников (официальный
+# .deb, релиз GitHub и т.д.), по файлу на приложение. Чтобы добавить новое:
+#   1) допишите имя в этот список;
+#   2) создайте vars/Debian/<имя>_vars.yml - параметры установки (URL .deb,
+#      версия релиза и т.п. - что нужно вашему способу установки);
+#   3) создайте tasks/debian_tools/<имя>_setup.ansible.yml - логика установки:
+#      обычно "скачать .deb и поставить через apt", но можно любую свою -
+#      плейбук вы пишете сами, по аналогии с соседними (chrome, vscode).
+desktop_apps_setup_debian_extra_apps:
+  - chrome
+  - vscode

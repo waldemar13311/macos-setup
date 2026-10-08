@@ -1,0 +1,12 @@
+---
+# Переменные для macOS (Homebrew Cask).
+# Подключаются в tasks/main.yml по ansible_os_family == 'Darwin'.
+
+# Приложения ставятся через Homebrew Cask (brew install --cask).
+# Уже установленный cask пропускается автоматически - и управляемый brew,
+# и установленный вручную (см. tasks/darwin_cask_setup.ansible.yml):
+# имя app-бандла роль берёт из метаданных cask, вручную ничего указывать не нужно
+desktop_apps_setup_casks:
+  - google-chrome
+  - visual-studio-code
+  - font-jetbrains-mono-nerd-font

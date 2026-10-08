@@ -1,0 +1,78 @@
+---
+# Настройка одного cask - вызывается из tasks/main.yml c loop_var
+# desktop_apps_setup_cask. Пропускает cask, если тот уже стоит:
+#   - управляется brew (brew info: installed != null), или
+#   - его app-бандл уже в /Applications (установлен вручную - иначе brew
+#     узнал бы об этом только скачав весь дистрибутив, ~150 МБ).
+# Имена бандлов берутся динамически из метаданных cask (brew info --json=v2,
+# поле artifacts), поэтому отдельный маппинг в vars не нужен. У cask'ов без
+# app-бандла список бандлов пуст - они проверяются только через
+# поле installed, ручная установка для них не детектится.
+# Имена во множественном числе - не для красного словца: у одного cask может
+# быть несколько app-артефактов (пример - cleanmymac: CleanMyMac_5.app и
+# CleanMyMac.app с другим target), поэтому все проверки - циклы по списку
+
+# Получить метаданные cask-пакета
+- name: Fetch cask metadata ({{ desktop_apps_setup_cask }})
+  ansible.builtin.command: brew info --cask --json=v2 {{ desktop_apps_setup_cask }}
+  register: desktop_apps_setup_cask_meta
+  changed_when: false
+  # Таска read-only и нужна следующим таскам для шаблонизации - выполняем
+  # и в check-режиме, иначе from_json упадёт на пустом register
+  check_mode: false
+
+# Проверяем есть ли пакет в /Applications
+- name: Check cask app bundles in /Applications ({{ desktop_apps_setup_cask }})
+  ansible.builtin.stat:
+    path: "/Applications/{{ bundle }}"
+  loop: >-
+    {{ (desktop_apps_setup_cask_meta.stdout | from_json)['casks'][0]['artifacts']
+       | selectattr('app', 'defined')
+       | map(attribute='app')
+       | flatten }}
+  loop_control:
+    loop_var: bundle
+  register: desktop_apps_setup_bundle_stats
+  changed_when: false
+
+- name: Collect existing app bundles ({{ desktop_apps_setup_cask }})
+  # Нормализуем register stat-цикла в плоский список найденных бандлов -
+  # его используют обе следующие таски (сообщение и when установки)
+  ansible.builtin.set_fact:
+    desktop_apps_setup_existing_bundles: >-
+      {{ desktop_apps_setup_bundle_stats.results | default([])
+         | selectattr('stat', 'defined')
+         | selectattr('stat.exists')
+         | map(attribute='bundle')
+         | list }}
+
+# Если пакет уже есть в /Applications просто пропускаем
+# и выводим сообщение об этом
+- name: Already installed - skipping ({{ desktop_apps_setup_cask }})
+  ansible.builtin.debug:
+    msg: >-
+      Already installed
+      {{ '(managed by Homebrew)'
+         if (desktop_apps_setup_cask_meta.stdout | from_json)['casks'][0]['installed'] is not none
+         else '(вручную: ' ~ (desktop_apps_setup_existing_bundles | join(', ')) ~ ')' }}
+  when: >-
+    (desktop_apps_setup_cask_meta.stdout | from_json)['casks'][0]['installed'] is not none
+    or desktop_apps_setup_existing_bundles | length > 0
+
+# Если пакета нет, то устанавливаем его
+- name: Install cask ({{ desktop_apps_setup_cask }})
+  # brew install идемпотентен: установленный cask вернёт "already installed".
+  # failed_when прощает "It seems there is already an App at" - на случай,
+  # если приложение лежит вне /Applications (например, в ~/Applications)
+  ansible.builtin.command:
+    cmd: brew install --cask {{ desktop_apps_setup_cask }}
+  register: desktop_apps_setup_cask_install
+  changed_when: >-
+    desktop_apps_setup_cask_install.rc == 0 and
+    'already installed' not in desktop_apps_setup_cask_install.stdout
+  failed_when: >-
+    desktop_apps_setup_cask_install.rc != 0 and
+    'It seems there is already an App at' not in desktop_apps_setup_cask_install.stderr
+  when: >-
+    (desktop_apps_setup_cask_meta.stdout | from_json)['casks'][0]['installed'] is none
+    and desktop_apps_setup_existing_bundles | length == 0
