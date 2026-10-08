@@ -48,13 +48,13 @@ hi Constant guifg=#ae81ff guibg=NONE guisp=NONE gui=NONE ctermfg=141 ctermbg=NON
 hi CurSearch guifg=#ffaf5f guibg=#282923 guisp=NONE gui=reverse ctermfg=215 ctermbg=235 cterm=reverse term=reverse
 hi CursorColumn guifg=NONE guibg=#3a392f guisp=NONE gui=NONE ctermfg=NONE ctermbg=237 cterm=NONE term=NONE
 hi CursorLine guifg=NONE guibg=#3a392f guisp=NONE gui=NONE ctermfg=NONE ctermbg=237 cterm=NONE term=underline
-hi CursorLineNr guifg=#dadada guibg=NONE guisp=NONE gui=bold ctermfg=253 ctermbg=NONE cterm=bold term=bold
+hi CursorLineNr guifg=#dadada guibg=NONE guisp=NONE gui=NONE ctermfg=253 ctermbg=NONE cterm=NONE term=bold
 hi Debug guifg=#80beb5 guibg=NONE guisp=NONE gui=NONE ctermfg=73 ctermbg=NONE cterm=NONE term=NONE
 hi DiffAdd guifg=#5faf5f guibg=NONE guisp=NONE gui=reverse ctermfg=71 ctermbg=NONE cterm=reverse term=reverse
 hi DiffChange guifg=#5f87af guibg=NONE guisp=NONE gui=reverse ctermfg=67 ctermbg=NONE cterm=reverse term=NONE
 hi DiffDelete guifg=#af5f5f guibg=NONE guisp=NONE gui=reverse ctermfg=131 ctermbg=NONE cterm=reverse term=reverse
 hi DiffText guifg=#af87af guibg=NONE guisp=NONE gui=reverse ctermfg=139 ctermbg=NONE cterm=reverse term=reverse
-hi Directory guifg=#a1efe4 guibg=NONE guisp=NONE gui=bold ctermfg=116 ctermbg=NONE cterm=bold term=NONE
+hi Directory guifg=#a1efe4 guibg=NONE guisp=NONE gui=NONE ctermfg=116 ctermbg=NONE cterm=NONE term=NONE
 hi EndOfBuffer guifg=#8a8a8a guibg=NONE guisp=NONE gui=NONE ctermfg=245 ctermbg=NONE cterm=NONE term=NONE
 hi Error guifg=#f92672 guibg=#000000 guisp=NONE gui=reverse ctermfg=197 ctermbg=16 cterm=reverse term=bold,reverse
 hi ErrorMsg guifg=#f92672 guibg=#000000 guisp=NONE gui=reverse ctermfg=197 ctermbg=16 cterm=reverse term=bold,reverse
@@ -67,8 +67,8 @@ hi IncSearch guifg=#ffaf5f guibg=#282923 guisp=NONE gui=reverse ctermfg=215 cter
 hi LineNr guifg=#8a8a8a guibg=NONE guisp=NONE gui=NONE ctermfg=245 ctermbg=NONE cterm=NONE term=NONE
 hi LineNrAbove guifg=#8a8a8a guibg=NONE guisp=NONE gui=NONE ctermfg=245 ctermbg=NONE cterm=NONE term=NONE
 hi LineNrBelow guifg=#8a8a8a guibg=NONE guisp=NONE gui=NONE ctermfg=245 ctermbg=NONE cterm=NONE term=NONE
-hi MatchParen guifg=#fd971f guibg=NONE guisp=NONE gui=bold ctermfg=208 ctermbg=NONE cterm=bold term=bold,underline
-hi ModeMsg guifg=NONE guibg=NONE guisp=NONE gui=bold ctermfg=NONE ctermbg=NONE cterm=bold term=bold
+hi MatchParen guifg=#fd971f guibg=NONE guisp=NONE gui=NONE ctermfg=208 ctermbg=NONE cterm=NONE term=bold,underline
+hi ModeMsg guifg=NONE guibg=NONE guisp=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE term=bold
 hi MoreMsg guifg=#81af24 guibg=NONE guisp=NONE gui=NONE ctermfg=106 ctermbg=NONE cterm=NONE term=NONE
 hi NonText guifg=#8a8a8a guibg=NONE guisp=NONE gui=NONE ctermfg=245 ctermbg=NONE cterm=NONE term=NONE
 hi Pmenu guifg=NONE guibg=#585858 guisp=NONE gui=NONE ctermfg=NONE ctermbg=240 cterm=NONE term=reverse
@@ -93,27 +93,27 @@ hi SpellBad guifg=NONE guibg=NONE guisp=#d75f5f gui=undercurl ctermfg=167 ctermb
 hi SpellCap guifg=NONE guibg=NONE guisp=#ffaf5f gui=undercurl ctermfg=215 ctermbg=NONE cterm=underline term=underline
 hi SpellLocal guifg=NONE guibg=NONE guisp=#5fd75f gui=undercurl ctermfg=77 ctermbg=NONE cterm=underline term=underline
 hi SpellRare guifg=NONE guibg=NONE guisp=#fd5ff0 gui=undercurl ctermfg=207 ctermbg=NONE cterm=underline term=underline
-hi Statement guifg=#f92672 guibg=NONE guisp=NONE gui=bold ctermfg=197 ctermbg=NONE cterm=bold term=NONE
+hi Statement guifg=#f92672 guibg=NONE guisp=NONE gui=NONE ctermfg=197 ctermbg=NONE cterm=NONE term=NONE
 hi StatusLine guifg=#282923 guibg=#bababa guisp=NONE gui=NONE ctermfg=235 ctermbg=250 cterm=NONE term=bold,reverse
 hi StatusLineNC guifg=#282923 guibg=#74705d guisp=NONE gui=NONE ctermfg=235 ctermbg=244 cterm=NONE term=bold,underline
 hi String guifg=#e6db74 guibg=NONE guisp=NONE gui=NONE ctermfg=185 ctermbg=NONE cterm=NONE term=NONE
 hi TabLine guifg=#282923 guibg=#74705d guisp=NONE gui=NONE ctermfg=235 ctermbg=244 cterm=NONE term=bold,underline
 hi TabLineFill guifg=#282923 guibg=#74705d guisp=NONE gui=NONE ctermfg=235 ctermbg=244 cterm=NONE term=NONE
-hi TabLineSel guifg=#282923 guibg=#bababa guisp=NONE gui=bold ctermfg=235 ctermbg=250 cterm=bold term=bold,reverse
-hi Title guifg=NONE guibg=NONE guisp=NONE gui=bold ctermfg=NONE ctermbg=NONE cterm=bold term=NONE
-hi Todo guifg=#dadada guibg=NONE guisp=NONE gui=bold ctermfg=253 ctermbg=NONE cterm=bold term=bold,reverse
-hi ToolbarButton guifg=#74705d guibg=#f8f8f2 guisp=NONE gui=bold,reverse ctermfg=244 ctermbg=255 cterm=bold,reverse term=bold,reverse
+hi TabLineSel guifg=#282923 guibg=#bababa guisp=NONE gui=NONE ctermfg=235 ctermbg=250 cterm=NONE term=bold,reverse
+hi Title guifg=NONE guibg=NONE guisp=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE term=NONE
+hi Todo guifg=#dadada guibg=NONE guisp=NONE gui=NONE ctermfg=253 ctermbg=NONE cterm=NONE term=bold,reverse
+hi ToolbarButton guifg=#74705d guibg=#f8f8f2 guisp=NONE gui=reverse ctermfg=244 ctermbg=255 cterm=reverse term=bold,reverse
 hi ToolbarLine guifg=NONE guibg=NONE guisp=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE term=reverse
-hi Type guifg=#fd971f guibg=NONE guisp=NONE gui=bold ctermfg=208 ctermbg=NONE cterm=bold term=NONE
+hi Type guifg=#fd971f guibg=NONE guisp=NONE gui=NONE ctermfg=208 ctermbg=NONE cterm=NONE term=NONE
 hi Underlined guifg=#66d9ef guibg=NONE guisp=NONE gui=underline ctermfg=81 ctermbg=NONE cterm=underline term=underline
 hi VertSplit guifg=#74705d guibg=#74705d guisp=NONE gui=NONE ctermfg=244 ctermbg=244 cterm=NONE term=NONE
 hi Visual guifg=#a1efe4 guibg=#282923 guisp=NONE gui=reverse ctermfg=116 ctermbg=235 cterm=reverse term=reverse
 hi VisualNOS guifg=#282923 guibg=#80beb5 guisp=NONE gui=NONE ctermfg=235 ctermbg=73 cterm=NONE term=NONE
 hi WarningMsg guifg=#f92672 guibg=NONE guisp=NONE gui=NONE ctermfg=197 ctermbg=NONE cterm=NONE term=standout
-hi WildMenu guifg=#282923 guibg=#e6db74 guisp=NONE gui=bold ctermfg=235 ctermbg=185 cterm=bold term=bold
+hi WildMenu guifg=#282923 guibg=#e6db74 guisp=NONE gui=NONE ctermfg=235 ctermbg=185 cterm=NONE term=bold
 hi debugBreakpoint guifg=#282923 guibg=#f92672 guisp=NONE gui=NONE ctermfg=235 ctermbg=197 cterm=NONE term=NONE
 hi debugPC guifg=#282923 guibg=#51aebe guisp=NONE gui=NONE ctermfg=235 ctermbg=73 cterm=NONE term=NONE
-hi htmlBold guifg=#f8f8f2 guibg=NONE guisp=NONE gui=bold ctermfg=255 ctermbg=NONE cterm=bold term=bold
+hi htmlBold guifg=#f8f8f2 guibg=NONE guisp=NONE gui=NONE ctermfg=255 ctermbg=NONE cterm=NONE term=bold
 hi htmlItalic guifg=#f8f8f2 guibg=NONE guisp=NONE gui=italic ctermfg=255 ctermbg=NONE cterm=underline term=underline
 hi markdownH1Delimiter guifg=#f92672 guibg=NONE guisp=NONE gui=NONE ctermfg=197 ctermbg=NONE cterm=NONE term=NONE
 hi markdownH2Delimiter guifg=#e6db74 guibg=NONE guisp=NONE gui=NONE ctermfg=185 ctermbg=NONE cterm=NONE term=NONE
@@ -144,13 +144,13 @@ if s:t_Co >= 16
   hi CurSearch ctermfg=red ctermbg=black cterm=reverse
   hi CursorColumn ctermfg=black ctermbg=darkyellow cterm=NONE
   hi CursorLine ctermfg=NONE ctermbg=NONE cterm=underline
-  hi CursorLineNr ctermfg=white ctermbg=NONE cterm=bold
+  hi CursorLineNr ctermfg=white ctermbg=NONE cterm=NONE
   hi Debug ctermfg=darkcyan ctermbg=NONE cterm=NONE
   hi DiffAdd ctermfg=darkgreen ctermbg=NONE cterm=reverse
   hi DiffChange ctermfg=darkblue ctermbg=NONE cterm=reverse
   hi DiffDelete ctermfg=darkred ctermbg=NONE cterm=reverse
   hi DiffText ctermfg=darkmagenta ctermbg=NONE cterm=reverse
-  hi Directory ctermfg=cyan ctermbg=NONE cterm=bold
+  hi Directory ctermfg=cyan ctermbg=NONE cterm=NONE
   hi EndOfBuffer ctermfg=darkgrey ctermbg=NONE cterm=NONE
   hi Error ctermfg=red ctermbg=black cterm=reverse
   hi ErrorMsg ctermfg=red ctermbg=black cterm=reverse
@@ -163,8 +163,8 @@ if s:t_Co >= 16
   hi LineNr ctermfg=darkgrey ctermbg=NONE cterm=NONE
   hi LineNrAbove ctermfg=darkgrey ctermbg=NONE cterm=NONE
   hi LineNrBelow ctermfg=darkgrey ctermbg=NONE cterm=NONE
-  hi MatchParen ctermfg=darkyellow ctermbg=NONE cterm=bold
-  hi ModeMsg ctermfg=NONE ctermbg=NONE cterm=bold
+  hi MatchParen ctermfg=darkyellow ctermbg=NONE cterm=NONE
+  hi ModeMsg ctermfg=NONE ctermbg=NONE cterm=NONE
   hi MoreMsg ctermfg=darkgreen ctermbg=NONE cterm=NONE
   hi NonText ctermfg=darkgrey ctermbg=NONE cterm=NONE
   hi Pmenu ctermfg=black ctermbg=gray cterm=NONE
@@ -172,8 +172,8 @@ if s:t_Co >= 16
   hi PmenuExtraSel ctermfg=black ctermbg=darkyellow cterm=NONE
   hi PmenuKind ctermfg=darkred ctermbg=gray cterm=NONE
   hi PmenuKindSel ctermfg=darkred ctermbg=darkyellow cterm=NONE
-  hi PmenuMatch ctermfg=black ctermbg=gray cterm=bold
-  hi PmenuMatchSel ctermfg=black ctermbg=darkyellow cterm=bold
+  hi PmenuMatch ctermfg=black ctermbg=gray cterm=NONE
+  hi PmenuMatchSel ctermfg=black ctermbg=darkyellow cterm=NONE
   hi PmenuSbar ctermfg=NONE ctermbg=gray cterm=NONE
   hi PmenuSel ctermfg=black ctermbg=darkyellow cterm=NONE
   hi PmenuThumb ctermfg=gray ctermbg=black cterm=NONE
@@ -189,27 +189,27 @@ if s:t_Co >= 16
   hi SpellCap ctermfg=darkyellow ctermbg=NONE cterm=underline
   hi SpellLocal ctermfg=darkgreen ctermbg=NONE cterm=underline
   hi SpellRare ctermfg=magenta ctermbg=NONE cterm=underline
-  hi Statement ctermfg=red ctermbg=NONE cterm=bold
+  hi Statement ctermfg=red ctermbg=NONE cterm=NONE
   hi StatusLine ctermfg=black ctermbg=gray cterm=NONE
   hi StatusLineNC ctermfg=black ctermbg=darkgray cterm=NONE
   hi String ctermfg=yellow ctermbg=NONE cterm=NONE
   hi TabLine ctermfg=black ctermbg=darkgray cterm=NONE
   hi TabLineFill ctermfg=black ctermbg=darkgray cterm=NONE
-  hi TabLineSel ctermfg=black ctermbg=gray cterm=bold
-  hi Title ctermfg=NONE ctermbg=NONE cterm=bold
-  hi Todo ctermfg=white ctermbg=NONE cterm=bold
-  hi ToolbarButton ctermfg=darkgray ctermbg=white cterm=bold,reverse
+  hi TabLineSel ctermfg=black ctermbg=gray cterm=NONE
+  hi Title ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi Todo ctermfg=white ctermbg=NONE cterm=NONE
+  hi ToolbarButton ctermfg=darkgray ctermbg=white cterm=reverse
   hi ToolbarLine ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi Type ctermfg=darkyellow ctermbg=NONE cterm=bold
+  hi Type ctermfg=darkyellow ctermbg=NONE cterm=NONE
   hi Underlined ctermfg=blue ctermbg=NONE cterm=underline
   hi VertSplit ctermfg=darkgray ctermbg=darkgray cterm=NONE
   hi Visual ctermfg=cyan ctermbg=black cterm=reverse
   hi VisualNOS ctermfg=black ctermbg=darkcyan cterm=NONE
   hi WarningMsg ctermfg=red ctermbg=NONE cterm=NONE
-  hi WildMenu ctermfg=black ctermbg=yellow cterm=bold
+  hi WildMenu ctermfg=black ctermbg=yellow cterm=NONE
   hi debugBreakpoint ctermfg=black ctermbg=red cterm=NONE
   hi debugPC ctermfg=black ctermbg=darkblue cterm=NONE
-  hi htmlBold ctermfg=white ctermbg=NONE cterm=bold
+  hi htmlBold ctermfg=white ctermbg=NONE cterm=NONE
   hi htmlItalic ctermfg=white ctermbg=NONE cterm=underline
   hi markdownH1Delimiter ctermfg=red ctermbg=NONE cterm=NONE
   hi markdownH2Delimiter ctermfg=yellow ctermbg=NONE cterm=NONE
@@ -227,42 +227,42 @@ if s:t_Co >= 8
   hi Changed ctermfg=darkyellow ctermbg=NONE cterm=NONE
   hi Character ctermfg=darkgreen ctermbg=NONE cterm=NONE
   hi ColorColumn ctermfg=black ctermbg=darkyellow cterm=NONE
-  hi Comment ctermfg=gray ctermbg=NONE cterm=bold
+  hi Comment ctermfg=gray ctermbg=NONE cterm=NONE
   hi Conceal ctermfg=gray ctermbg=NONE cterm=NONE
   hi Constant ctermfg=darkmagenta ctermbg=NONE cterm=NONE
   hi CurSearch ctermfg=black ctermbg=darkyellow cterm=NONE
   hi CursorColumn ctermfg=black ctermbg=darkyellow cterm=NONE
   hi CursorLine ctermfg=NONE ctermbg=NONE cterm=underline
-  hi CursorLineNr ctermfg=darkyellow ctermbg=NONE cterm=bold
+  hi CursorLineNr ctermfg=darkyellow ctermbg=NONE cterm=NONE
   hi Debug ctermfg=darkcyan ctermbg=NONE cterm=NONE
   hi DiffAdd ctermfg=darkgreen ctermbg=NONE cterm=reverse
   hi DiffChange ctermfg=darkblue ctermbg=NONE cterm=reverse
   hi DiffDelete ctermfg=darkred ctermbg=NONE cterm=reverse
   hi DiffText ctermfg=darkmagenta ctermbg=NONE cterm=reverse
-  hi Directory ctermfg=darkcyan ctermbg=NONE cterm=bold
-  hi EndOfBuffer ctermfg=gray ctermbg=NONE cterm=bold
-  hi Error ctermfg=darkred ctermbg=gray cterm=bold,reverse
-  hi ErrorMsg ctermfg=darkred ctermbg=gray cterm=bold,reverse
-  hi FoldColumn ctermfg=gray ctermbg=NONE cterm=bold
+  hi Directory ctermfg=darkcyan ctermbg=NONE cterm=NONE
+  hi EndOfBuffer ctermfg=gray ctermbg=NONE cterm=NONE
+  hi Error ctermfg=darkred ctermbg=gray cterm=reverse
+  hi ErrorMsg ctermfg=darkred ctermbg=gray cterm=reverse
+  hi FoldColumn ctermfg=gray ctermbg=NONE cterm=NONE
   hi Folded ctermfg=black ctermbg=darkyellow cterm=NONE
   hi Function ctermfg=darkgreen ctermbg=NONE cterm=NONE
   hi Identifier ctermfg=darkblue ctermbg=NONE cterm=NONE
   hi Ignore ctermfg=NONE ctermbg=NONE cterm=NONE
   hi IncSearch ctermfg=black ctermbg=darkyellow cterm=NONE
-  hi LineNr ctermfg=gray ctermbg=NONE cterm=bold
-  hi LineNrAbove ctermfg=gray ctermbg=NONE cterm=bold
-  hi LineNrBelow ctermfg=gray ctermbg=NONE cterm=bold
-  hi MatchParen ctermfg=darkyellow ctermbg=NONE cterm=bold
-  hi ModeMsg ctermfg=NONE ctermbg=NONE cterm=bold
+  hi LineNr ctermfg=gray ctermbg=NONE cterm=NONE
+  hi LineNrAbove ctermfg=gray ctermbg=NONE cterm=NONE
+  hi LineNrBelow ctermfg=gray ctermbg=NONE cterm=NONE
+  hi MatchParen ctermfg=darkyellow ctermbg=NONE cterm=NONE
+  hi ModeMsg ctermfg=NONE ctermbg=NONE cterm=NONE
   hi MoreMsg ctermfg=darkgreen ctermbg=NONE cterm=NONE
-  hi NonText ctermfg=gray ctermbg=NONE cterm=bold
+  hi NonText ctermfg=gray ctermbg=NONE cterm=NONE
   hi Pmenu ctermfg=black ctermbg=gray cterm=NONE
   hi PmenuExtra ctermfg=black ctermbg=gray cterm=NONE
   hi PmenuExtraSel ctermfg=black ctermbg=darkyellow cterm=NONE
   hi PmenuKind ctermfg=darkred ctermbg=gray cterm=NONE
   hi PmenuKindSel ctermfg=darkred ctermbg=darkyellow cterm=NONE
-  hi PmenuMatch ctermfg=black ctermbg=gray cterm=bold
-  hi PmenuMatchSel ctermfg=black ctermbg=darkyellow cterm=bold
+  hi PmenuMatch ctermfg=black ctermbg=gray cterm=NONE
+  hi PmenuMatchSel ctermfg=black ctermbg=darkyellow cterm=NONE
   hi PmenuSbar ctermfg=NONE ctermbg=gray cterm=NONE
   hi PmenuSel ctermfg=black ctermbg=darkyellow cterm=NONE
   hi PmenuThumb ctermfg=gray ctermbg=black cterm=NONE
@@ -272,24 +272,24 @@ if s:t_Co >= 8
   hi Removed ctermfg=darkred ctermbg=NONE cterm=NONE
   hi Search ctermfg=black ctermbg=darkblue cterm=NONE
   hi SignColumn ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi Special ctermfg=darkcyan ctermbg=NONE cterm=bold
-  hi SpecialKey ctermfg=gray ctermbg=NONE cterm=bold
+  hi Special ctermfg=darkcyan ctermbg=NONE cterm=NONE
+  hi SpecialKey ctermfg=gray ctermbg=NONE cterm=NONE
   hi SpellBad ctermfg=darkred ctermbg=gray cterm=reverse
   hi SpellCap ctermfg=darkblue ctermbg=gray cterm=reverse
   hi SpellLocal ctermfg=darkgreen ctermbg=black cterm=reverse
   hi SpellRare ctermfg=darkmagenta ctermbg=gray cterm=reverse
-  hi Statement ctermfg=darkred ctermbg=NONE cterm=bold
-  hi StatusLine ctermfg=gray ctermbg=black cterm=bold,reverse
+  hi Statement ctermfg=darkred ctermbg=NONE cterm=NONE
+  hi StatusLine ctermfg=gray ctermbg=black cterm=reverse
   hi StatusLineNC ctermfg=gray ctermbg=black cterm=reverse
-  hi String ctermfg=darkyellow ctermbg=NONE cterm=bold
+  hi String ctermfg=darkyellow ctermbg=NONE cterm=NONE
   hi TabLine ctermfg=black ctermbg=gray cterm=NONE
   hi TabLineFill ctermfg=gray ctermbg=gray cterm=NONE
-  hi TabLineSel ctermfg=black ctermbg=gray cterm=bold
-  hi Title ctermfg=NONE ctermbg=NONE cterm=bold
-  hi Todo ctermfg=gray ctermbg=NONE cterm=bold
+  hi TabLineSel ctermfg=black ctermbg=gray cterm=NONE
+  hi Title ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi Todo ctermfg=gray ctermbg=NONE cterm=NONE
   hi ToolbarButton ctermfg=gray ctermbg=black cterm=reverse
   hi ToolbarLine ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi Type ctermfg=darkyellow ctermbg=NONE cterm=bold
+  hi Type ctermfg=darkyellow ctermbg=NONE cterm=NONE
   hi Underlined ctermfg=darkblue ctermbg=NONE cterm=underline
   hi VertSplit ctermfg=gray ctermbg=gray cterm=NONE
   hi Visual ctermfg=black ctermbg=darkcyan cterm=NONE
@@ -298,7 +298,7 @@ if s:t_Co >= 8
   hi WildMenu ctermfg=black ctermbg=darkyellow cterm=NONE
   hi debugBreakpoint ctermfg=black ctermbg=darkcyan cterm=NONE
   hi debugPC ctermfg=black ctermbg=darkblue cterm=NONE
-  hi htmlBold ctermfg=gray ctermbg=NONE cterm=bold
+  hi htmlBold ctermfg=gray ctermbg=NONE cterm=NONE
   hi htmlItalic ctermfg=gray ctermbg=NONE cterm=underline
   hi markdownH1Delimiter ctermfg=darkred ctermbg=NONE cterm=NONE
   hi markdownH2Delimiter ctermfg=darkyellow ctermbg=NONE cterm=NONE

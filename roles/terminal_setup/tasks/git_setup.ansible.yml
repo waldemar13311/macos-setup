@@ -3,3 +3,22 @@
     path: /opt/homebrew/share/zsh/site-functions/_git
     state: absent
   when: ansible_os_family == 'Darwin'
+
+- name: Disable bold in git color output
+  # Жирность зарезервирована за grep'ом (GREP_COLORS в variables.zsh), остальной
+  # вывод git - обычное начертание. Яркие цвета (brightgreen/brightcyan)
+  # компенсируют яркость, которую раньше давала жирность.
+  # git_config не переписывает весь ~/.gitconfig, а правит только эти ключи -
+  # ручные настройки пользователя (user.name, core.pager и т.д.) не трогаются.
+  # Дефолты, которые переопределяем: color.diff.meta = bold,
+  # color.status.header = bold, color.decorate.branch/HEAD = bold
+  community.general.git_config:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    scope: global
+  loop:
+    - { name: "color.diff.meta", value: "normal" }
+    - { name: "color.diff.func", value: "normal" }
+    - { name: "color.status.header", value: "normal" }
+    - { name: "color.decorate.branch", value: "brightgreen" }
+    - { name: "color.decorate.HEAD", value: "brightcyan" }

@@ -35,6 +35,12 @@ elif [[ -f "$XDG_DATA_HOME/antidote/antidote.zsh" ]]; then
     source "$XDG_DATA_HOME/antidote/antidote.zsh" && antidote load
 fi
 
+# zsh-syntax-highlighting: неверная команда без жирности (дефолт плагина -
+# fg=red,bold). Жирность зарезервирована за grep'ом, остальному - обычное
+# начертание. Переопределение - после antidote load, чтобы плагин не
+# перетёр стиль своими дефолтами
+ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=red'
+
 # Инициализируем автодополнения
 # -C: берём готовый дамп .zcompdump, не пересканируем весь fpath повторно
 # (первый compinit выше уже собрал функции для compdef; роль чистит дамп
