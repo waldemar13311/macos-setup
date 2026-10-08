@@ -53,7 +53,7 @@ all:
 ### Установка ansible зависимостей
 
 ```bash
-ansible-galaxy install -r .ansible/requirements.yml
+ansible-galaxy collection install -r .ansible/requirements.yml
 ```
 
 ### Запуск
