@@ -1,7 +1,7 @@
 [project]
-name = "macos-setup"
+name = "workstation-setup"
 version = "0.1.0"
-description = "IaC macos usage"
+description = "IaC workstation tools repo"
 readme = "README.md"
 requires-python = ">=3.12,<3.14"
 dependencies = [
