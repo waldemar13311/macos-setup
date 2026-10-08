@@ -2,8 +2,13 @@
 alias ls="eza --icons=always"
 alias ll="eza -lAgi --group-directories-first --classify=always --icons=always --time-style=long-iso"
 
-# cat перекрывается функцией в functions.zsh (bat с цветом в пайпах)
-# и alias'ом здесь быть не должно - alias перебил бы функцию
+# cat - bat в режиме plain (-pp: без нумерации строк и рамки). Раскраска -
+# только на прямом выводе в терминал (дефолтный режим auto bat): в пайпах
+# (| grep, | head, | jq, | ssh ...) и при редиректе вывод всегда чистый,
+# без ANSI-кодов - предсказуемо для любых потребителей. Подсветку совпадений
+# при | grep делает сам grep (GREP_COLORS в variables.zsh).
+# Настоящий cat: command cat
+alias cat="bat -pp"
 
 # Подсветка совпадений в grep (стиль выделения - GREP_COLORS в variables.zsh).
 # color=auto: красит только в терминал, пайпы и файлы остаются чистыми
