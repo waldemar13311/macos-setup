@@ -2,7 +2,12 @@
 alias ls="eza --icons=always"
 alias ll="eza -lAgi --group-directories-first --classify=always --icons=always --time-style=long-iso"
 
-alias cat="bat -pp"
+# cat перекрывается функцией в functions.zsh (bat с цветом в пайпах)
+# и alias'ом здесь быть не должно - alias перебил бы функцию
+
+# Подсветка совпадений в grep (стиль выделения - GREP_COLORS в variables.zsh).
+# color=auto: красит только в терминал, пайпы и файлы остаются чистыми
+alias grep="grep --color=auto"
 
 alias less="bat --pager 'less -R'"
 
