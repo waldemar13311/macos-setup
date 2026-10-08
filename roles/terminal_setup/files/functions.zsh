@@ -149,18 +149,27 @@ iconclean() {
 
 # region === my_pbcopy ===
 # Функция-обертка для копирования (на неё есть алиас).
-# macOS - pbcopy; Linux - wl-copy (Wayland) или xclip (X11)
+# macOS - pbcopy; Linux - wl-copy (Wayland) или xclip (X11).
+# ANSI-последовательности (цвет и пр.) срезаем: команды вроде cat/bat в пайпе
+# красят вывод принудительно (для head/grep), и без очистки управляющие коды
+# попали бы в буфер обмена
 my_pbcopy() {
+    local -a clipper
     if (( $+commands[pbcopy] )); then
-        pbcopy
+        clipper=(pbcopy)
     elif (( $+commands[wl-copy] )); then
-        wl-copy
+        clipper=(wl-copy)
     elif (( $+commands[xclip] )); then
-        xclip -in -selection clipboard
+        clipper=(xclip -in -selection clipboard)
     else
         echo "❌ Не найдена утилита буфера обмена (pbcopy/wl-copy/xclip)" >&2
         return 1
     fi
+
+    # CSI-последовательности (ESC [ параметр(ы) ... финальный_байт),
+    # двухсимвольные ESC-коды (например, смена кодировки ESC ( B)
+    # и OSC-последовательности (ESC ] ... BEL/ESC \)
+    perl -pe 's/\e\[[0-9;?]*[ -\/]*[@-~]//g; s/\e\][^\a\e]*(\a|\e\\)//g; s/\e[()][0-9A-Z]//g' | "${clipper[@]}"
 
     echo "✅ Скопировано в буфер обмена"
 }
@@ -192,7 +201,10 @@ my_pbpaste() {
 # отличает пайп от редиректа: [[ -p /dev/stdout ]] истинно, если stdout -
 # именованный канал (пайп). В пайпе цвет включаем принудительно (head/grep
 # получат раскрашенный вывод), при редиректе в файл - нет (иначе ANSI-коды
-# попали бы в файл), при прямом выводе в терминал - как обычно
+# попали бы в файл), при прямом выводе в терминал - как обычно.
+# НО: пайп-потребитель, который обрабатывает текст как данные (| jq, | md5,
+# | diff - ..., | ssh ..., | less), получит ANSI-коды - там нужен command cat
+# (буфер обмена эта проблема не касается: my_pbcopy срезает ANSI сам)
 cat() {
   if [[ -p /dev/stdout ]]; then
     bat -pp --color=always "$@"
